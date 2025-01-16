@@ -8,6 +8,8 @@
     --shadow-normal: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.2);
     --modal-background: rgba(0, 0, 0, 0.5);
+    --grid-border-color: rgba(255, 255, 255, 0.2);
+    --game-border: rgba(255, 255, 255, 0.5);
 }
 
 /* 重置样式 */
@@ -304,5 +306,181 @@ body {
 
     .radio-label {
         font-size: 1rem;
+    }
+}
+
+/* 游戏界面 */
+.game-screen {
+    display: none;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+/* 分数区域 */
+.score-container {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
+}
+
+.score-item {
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+.score-label {
+    display: block;
+    color: var(--color-text);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.score-value {
+    display: block;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* 游戏主区域 */
+.game-area {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* 主游戏区 */
+.main-area {
+    flex: 1;
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
+}
+
+#gameCanvas {
+    display: block;
+    background-color: var(--color-text);
+    border-radius: 8px;
+}
+
+/* 信息区 */
+.info-area {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* 下一个方块预览 */
+.next-piece {
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
+    text-align: center;
+}
+
+.next-piece h3 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+#nextCanvas {
+    display: block;
+    margin: 0 auto;
+    background-color: var(--color-text);
+    border-radius: 8px;
+}
+
+/* 控制说明 */
+.controls-info {
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
+}
+
+.controls-info h3 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.controls-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.controls-info li {
+    color: var(--color-text);
+    padding: 0.5rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* 游戏控制 */
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.game-controls .game-button {
+    font-size: 1rem;
+    padding: 0.8rem;
+}
+
+/* 响应式设计补充 */
+@media (max-width: 768px) {
+    .game-screen {
+        padding: 1rem;
+    }
+
+    .game-area {
+        flex-direction: column;
+    }
+
+    .info-area {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .next-piece,
+    .controls-info {
+        width: calc(50% - 0.5rem);
+    }
+
+    .game-controls {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .game-controls .game-button {
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .score-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .next-piece,
+    .controls-info {
+        width: 100%;
     }
 }
