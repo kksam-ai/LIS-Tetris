@@ -77,6 +77,7 @@
                 <!-- 游戏控制 -->
                 <div class="game-controls">
                     <button id="pauseGame" class="game-button">暂停</button>
+                    <button id="restartGameBtn" class="game-button">重新开始</button>
                     <button id="quitGame" class="game-button">退出</button>
                 </div>
             </div>
@@ -145,6 +146,16 @@
                 <h2>游戏结束</h2>
             </div>
             <div class="modal-body">
+                <!-- 玩家信息 -->
+                <div class="player-info">
+                    <div class="player-avatar">
+                        <img id="gameOverAvatar" src="assets/images/default-avatar.svg" alt="玩家头像">
+                    </div>
+                    <div class="player-name">
+                        <span id="gameOverUsername">玩家</span>
+                    </div>
+                </div>
+                <!-- 分数信息 -->
                 <div class="final-score">
                     <div class="score-row">
                         <span class="score-label">最终得分</span>
@@ -158,6 +169,38 @@
                 <div class="game-over-buttons">
                     <button id="restartGame" class="game-button">重新开始</button>
                     <button id="exitGame" class="game-button">退出游戏</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认弹窗 -->
+    <div id="quitConfirmModal" class="modal">
+        <div class="modal-content game-over-content">
+            <div class="modal-header">
+                <h2>退出确认</h2>
+            </div>
+            <div class="modal-body">
+                <p class="quit-message">确定要退出当前游戏吗？</p>
+                <div class="game-over-buttons">
+                    <button id="confirmQuit" class="game-button">退出游戏</button>
+                    <button id="cancelQuit" class="game-button">继续游戏</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重新开始确认弹窗 -->
+    <div id="restartConfirmModal" class="modal">
+        <div class="modal-content game-over-content">
+            <div class="modal-header">
+                <h2>重新开始确认</h2>
+            </div>
+            <div class="modal-body">
+                <p class="quit-message">确定要重新开始游戏吗？当前游戏进度将丢失。</p>
+                <div class="game-over-buttons">
+                    <button id="confirmRestart" class="game-button">重新开始</button>
+                    <button id="cancelRestart" class="game-button">继续游戏</button>
                 </div>
             </div>
         </div>

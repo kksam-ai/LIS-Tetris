@@ -449,6 +449,15 @@ class GameController {
         document.getElementById('finalScore').textContent = this.score;
         document.getElementById('finalHighScore').textContent = this.highScore;
 
+        // 更新玩家信息显示
+        const gameOverAvatar = document.getElementById('gameOverAvatar');
+        const gameOverUsername = document.getElementById('gameOverUsername');
+        const currentAvatar = document.getElementById('gameAvatarPreview').src;
+        const currentUsername = document.getElementById('gameUsername').textContent;
+
+        gameOverAvatar.src = currentAvatar;
+        gameOverUsername.textContent = currentUsername;
+
         // 显示游戏结束弹窗
         this.gameOverModal.classList.add('show');
     }
@@ -618,7 +627,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveSettingsButton = document.getElementById('saveSettings');
     const pauseButton = document.getElementById('pauseGame');
     const quitButton = document.getElementById('quitGame');
+    const restartGameButton = document.getElementById('restartGameBtn');
     const difficultyInputs = document.querySelectorAll('input[name="difficulty"]');
+    const quitConfirmModal = document.getElementById('quitConfirmModal');
+    const confirmQuitButton = document.getElementById('confirmQuit');
+    const cancelQuitButton = document.getElementById('cancelQuit');
+    const restartConfirmModal = document.getElementById('restartConfirmModal');
+    const confirmRestartButton = document.getElementById('confirmRestart');
+    const cancelRestartButton = document.getElementById('cancelRestart');
 
     // 设置初始难度
     document.querySelector(`input[value="${settingsManager.settings.difficulty}"]`).checked = true;
@@ -635,12 +651,84 @@ document.addEventListener('DOMContentLoaded', () => {
         pauseButton.textContent = gameController.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
     });
 
+    // 重新开始按钮点击事件
+    restartGameButton.addEventListener('click', () => {
+        // 暂停游戏
+        if (gameController.gameState === GAME_STATES.PLAYING) {
+            gameController.togglePause();
+            pauseButton.textContent = '继续';
+        }
+        // 显示重新开始确认弹窗
+        restartConfirmModal.classList.add('show');
+    });
+
+    // 确认重新开始按钮点击事件
+    confirmRestartButton.addEventListener('click', () => {
+        restartConfirmModal.classList.remove('show');
+        gameController.restartGame();
+        pauseButton.textContent = '暂停';
+    });
+
+    // 取消重新开始按钮点击事件
+    cancelRestartButton.addEventListener('click', () => {
+        restartConfirmModal.classList.remove('show');
+        // 如果游戏之前是在进行中，则恢复游戏
+        if (gameController.gameState === GAME_STATES.PAUSED) {
+            gameController.togglePause();
+            pauseButton.textContent = '暂停';
+        }
+    });
+
+    // 点击modal背景关闭modal
+    restartConfirmModal.addEventListener('click', (e) => {
+        if (e.target === restartConfirmModal) {
+            restartConfirmModal.classList.remove('show');
+            // 如果游戏之前是在进行中，则恢复游戏
+            if (gameController.gameState === GAME_STATES.PAUSED) {
+                gameController.togglePause();
+                pauseButton.textContent = '暂停';
+            }
+        }
+    });
+
     // 退出按钮点击事件
     quitButton.addEventListener('click', () => {
-        if (confirm('确定要退出游戏吗？')) {
-            screenManager.showStartScreen();
-            gameController.gameState = GAME_STATES.IDLE;
-            cancelAnimationFrame(gameController.animationId);
+        // 暂停游戏
+        if (gameController.gameState === GAME_STATES.PLAYING) {
+            gameController.togglePause();
+            pauseButton.textContent = '继续';
+        }
+        // 显示退出确认弹窗
+        quitConfirmModal.classList.add('show');
+    });
+
+    // 确认退出按钮点击事件
+    confirmQuitButton.addEventListener('click', () => {
+        quitConfirmModal.classList.remove('show');
+        screenManager.showStartScreen();
+        gameController.gameState = GAME_STATES.IDLE;
+        cancelAnimationFrame(gameController.animationId);
+    });
+
+    // 取消退出按钮点击事件
+    cancelQuitButton.addEventListener('click', () => {
+        quitConfirmModal.classList.remove('show');
+        // 如果游戏之前是在进行中，则恢复游戏
+        if (gameController.gameState === GAME_STATES.PAUSED) {
+            gameController.togglePause();
+            pauseButton.textContent = '暂停';
+        }
+    });
+
+    // 点击modal背景关闭modal
+    quitConfirmModal.addEventListener('click', (e) => {
+        if (e.target === quitConfirmModal) {
+            quitConfirmModal.classList.remove('show');
+            // 如果游戏之前是在进行中，则恢复游戏
+            if (gameController.gameState === GAME_STATES.PAUSED) {
+                gameController.togglePause();
+                pauseButton.textContent = '暂停';
+            }
         }
     });
 

@@ -77,6 +77,7 @@ body {
     max-width: 20rem;
     width: 100%;
     text-align: center;
+    outline: none;
 }
 
 .game-button::after {
@@ -244,10 +245,62 @@ body {
 /* 游戏结束模态框特殊样式 */
 .game-over-content {
     text-align: center;
+    max-width: 400px;
+}
+
+.game-over-content .modal-header {
+    margin-bottom: 1rem;
+}
+
+.game-over-content .modal-header h2 {
+    width: 100%;
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 玩家信息样式 */
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.player-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-normal);
+}
+
+.player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.player-name {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    font-weight: bold;
+}
+
+/* 退出确认消息样式 */
+.quit-message {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin: 2rem 0;
+    line-height: 1.5;
 }
 
 .final-score {
-    margin: 2rem 0;
+    background-color: var(--color-background);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
 }
 
 .score-row {
@@ -458,6 +511,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    height: 600px; /* 与主游戏区高度一致 */
 }
 
 /* 个人信息 */
@@ -507,7 +561,7 @@ body {
 .next-piece h3 {
     color: var(--color-text);
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 #nextCanvas {
@@ -525,12 +579,13 @@ body {
     padding: 1rem;
     border-radius: 15px;
     box-shadow: var(--shadow-normal);
+    flex-shrink: 1; /* 允许区域收缩 */
 }
 
 .controls-info h3 {
     color: var(--color-text);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
     text-align: center;
 }
 
@@ -541,9 +596,9 @@ body {
 
 .controls-info li {
     color: var(--color-text);
-    padding: 0.5rem 0;
+    padding: 0.4rem 0;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 /* 游戏控制 */
@@ -551,11 +606,13 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: auto; /* 将控制按钮推到底部 */
 }
 
 .game-controls .game-button {
     font-size: 1rem;
     padding: 0.8rem;
+    outline: none;
 }
 
 /* 响应式设计补充 */
@@ -636,7 +693,7 @@ body {
 }
 
 .game-over-content .modal-header {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .game-over-content .modal-header h2 {
@@ -883,4 +940,16 @@ body {
     color: #ff6b6b;
     font-size: 0.8rem;
     margin-top: 0.3rem;
+}
+
+/* 响应式设计补充 */
+@media (max-width: 480px) {
+    .player-avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .player-name {
+        font-size: 1rem;
+    }
 }
