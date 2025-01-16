@@ -373,7 +373,7 @@ class GameController {
             if (this.gameState !== GAME_STATES.PLAYING) return;
 
             // 游戏控制按键列表
-            const gameKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'Space'];
+            const gameKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'Space', 'KeyF'];
 
             // 如果是游戏控制按键，阻止默认行为
             if (gameKeys.includes(event.code)) {
@@ -392,6 +392,14 @@ class GameController {
                     break;
                 case 'Space':
                     this.board.rotatePiece();
+                    break;
+                case 'KeyF':
+                    const linesCleared = this.board.hardDrop();
+                    this.handleLineClear(linesCleared);
+                    if (!this.board.update()) {
+                        this.gameOver();
+                        return;
+                    }
                     break;
             }
         });

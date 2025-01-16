@@ -212,11 +212,20 @@ class GameBoard {
         return false;
     }
 
-    // 快速下落
+    // 硬降（直接降落到底部）
     hardDrop() {
-        while (this.movePiece(0, 1)) {
-            // 继续下落直到碰撞
+        // 计算可以下落的最大距离
+        let dropDistance = 0;
+        while (!this.checkCollision(this.currentPiece, 0, dropDistance + 1)) {
+            dropDistance++;
         }
+
+        // 移动方块到最终位置
+        if (dropDistance > 0) {
+            this.currentPiece.y += dropDistance;
+        }
+
+        // 锁定方块并清除行
         this.lockPiece();
         return this.clearLines();
     }
