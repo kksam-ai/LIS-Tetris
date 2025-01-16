@@ -26,6 +26,12 @@ const GAME_CONFIG = {
             2: 300,        // 消除2行
             3: 500,        // 消除3行
             4: 800         // 消除4行
+        },
+        COMBO: {           // 连消加分
+            2: 50,         // 2连消
+            3: 100,        // 3连消
+            4: 200,        // 4连消
+            5: 300         // 5连消及以上
         }
     }
 };
@@ -150,6 +156,8 @@ class GameController {
         this.score = 0;
         this.level = 1;
         this.lines = 0;
+        this.combo = 0;
+        this.highScore = this.loadHighScore();
         this.dropCounter = 0;
         this.lastTime = 0;
         this.board = null;
@@ -161,6 +169,20 @@ class GameController {
 
         // 绑定键盘事件
         this.bindKeyboardEvents();
+    }
+
+    // 加载最高分
+    loadHighScore() {
+        const savedScore = localStorage.getItem('tetrisHighScore');
+        return savedScore ? parseInt(savedScore) : 0;
+    }
+
+    // 保存最高分
+    saveHighScore() {
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.setItem('tetrisHighScore', this.score.toString());
+        }
     }
 
     // 初始化游戏
@@ -192,14 +214,8 @@ class GameController {
                         this.updateScore();
                     }
                     break;
-                case 'ArrowUp':
-                    this.board.rotatePiece();
-                    break;
                 case 'Space':
-                    const linesCleared = this.board.hardDrop();
-                    this.score += GAME_CONFIG.SCORING.HARD_DROP *
-                        (this.board.height - this.board.currentPiece.y);
-                    this.handleLineClear(linesCleared);
+                    this.board.rotatePiece();
                     break;
             }
         });
@@ -261,10 +277,47 @@ class GameController {
     handleLineClear(linesCleared) {
         if (linesCleared > 0) {
             this.lines += linesCleared;
-            this.score += GAME_CONFIG.SCORING.LINE_CLEAR[linesCleared] * this.level;
+
+            // 基础分数
+            let baseScore = GAME_CONFIG.SCORING.LINE_CLEAR[linesCleared] * this.level;
+
+            // 连消加分
+            this.combo = linesCleared > 0 ? this.combo + 1 : 0;
+            if (this.combo >= 2) {
+                const comboMultiplier = Math.min(this.combo, 5);
+                baseScore += GAME_CONFIG.SCORING.COMBO[comboMultiplier] * this.level;
+            }
+
+            this.score += baseScore;
             this.level = Math.floor(this.lines / 10) + 1;
-            this.updateScore();
+
+            // 更新分数显示，带动画效果
+            this.updateScoreWithAnimation(baseScore);
+
+            // 检查并更新最高分
+            this.saveHighScore();
+        } else {
+            this.combo = 0;
         }
+    }
+
+    // 带动画效果的分数更新
+    updateScoreWithAnimation(scoreIncrease) {
+        const scoreElement = document.getElementById('score');
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.className = 'score-increase';
+        scoreDisplay.textContent = `+${scoreIncrease}`;
+
+        // 将动画元素添加到分数显示区域
+        scoreElement.parentElement.appendChild(scoreDisplay);
+
+        // 更新实际分数显示
+        this.updateScore();
+
+        // 动画结束后移除元素
+        setTimeout(() => {
+            scoreDisplay.remove();
+        }, 1000);
     }
 
     // 更新分数显示
@@ -272,6 +325,7 @@ class GameController {
         document.getElementById('score').textContent = this.score;
         document.getElementById('level').textContent = this.level;
         document.getElementById('lines').textContent = this.lines;
+        document.getElementById('highScore').textContent = this.highScore;
     }
 
     // 游戏主循环

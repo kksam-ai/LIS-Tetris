@@ -322,31 +322,35 @@ body {
 
 /* 分数区域 */
 .score-container {
+    position: relative;
     display: flex;
     justify-content: space-around;
-    background: white;
+    align-items: center;
     padding: 1rem;
-    border-radius: 15px;
+    background-color: var(--color-background-light);
+    border-radius: 10px;
     box-shadow: var(--shadow-normal);
+    margin-bottom: 1rem;
 }
 
 .score-item {
-    text-align: center;
-    padding: 0.5rem 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
 }
 
 .score-label {
-    display: block;
-    color: var(--color-text);
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.3rem;
 }
 
 .score-value {
-    display: block;
-    color: var(--color-primary);
     font-size: 1.5rem;
     font-weight: bold;
+    color: var(--color-primary);
 }
 
 /* 游戏主区域 */
@@ -483,4 +487,31 @@ body {
     .controls-info {
         width: 100%;
     }
+}
+
+/* 分数动画 */
+.score-increase {
+    position: absolute;
+    color: var(--color-accent);
+    font-size: 1.2rem;
+    font-weight: bold;
+    animation: scoreFloat 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes scoreFloat {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+}
+
+/* 高分突出显示 */
+#highScore {
+    color: var(--color-accent);
+    text-shadow: 0 0 5px rgba(255, 182, 193, 0.3);
 }
