@@ -14,6 +14,40 @@
             <button id="settings" class="game-button">设置</button>
         </div>
     </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>游戏设置</h2>
+                <button id="closeSettings" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>游戏难度</h3>
+                    <div class="difficulty-options">
+                        <label class="radio-container">
+                            <input type="radio" name="difficulty" value="easy">
+                            <span class="radio-label">简单</span>
+                            <span class="radio-custom"></span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="difficulty" value="normal" checked>
+                            <span class="radio-label">标准</span>
+                            <span class="radio-custom"></span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="difficulty" value="hard">
+                            <span class="radio-label">挑战</span>
+                            <span class="radio-custom"></span>
+                        </label>
+                    </div>
+                </div>
+                <button id="saveSettings" class="game-button">保存设置</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
 </html>
