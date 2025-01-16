@@ -17,6 +17,16 @@ const GAME_CONFIG = {
             HEIGHT: 120,
             GRID_SIZE: 30
         }
+    },
+    SCORING: {
+        SOFT_DROP: 1,      // 软降（加速下落）得分
+        HARD_DROP: 2,      // 硬降（直接落下）得分
+        LINE_CLEAR: {      // 消行得分
+            1: 100,        // 消除1行
+            2: 300,        // 消除2行
+            3: 500,        // 消除3行
+            4: 800         // 消除4行
+        }
     }
 };
 
@@ -131,11 +141,177 @@ class GameScreenManager {
     }
 }
 
+// 游戏控制器类
+class GameController {
+    constructor(settingsManager, screenManager) {
+        this.settingsManager = settingsManager;
+        this.screenManager = screenManager;
+        this.gameState = GAME_STATES.IDLE;
+        this.score = 0;
+        this.level = 1;
+        this.lines = 0;
+        this.dropCounter = 0;
+        this.lastTime = 0;
+        this.board = null;
+        this.renderer = null;
+        this.animationId = null;
+
+        // 初始化游戏板和渲染器
+        this.initializeGame();
+
+        // 绑定键盘事件
+        this.bindKeyboardEvents();
+    }
+
+    // 初始化游戏
+    initializeGame() {
+        const { MAIN, PREVIEW } = GAME_CONFIG.CANVAS;
+        this.board = new GameBoard(MAIN.WIDTH / MAIN.GRID_SIZE, MAIN.HEIGHT / MAIN.GRID_SIZE);
+        this.renderer = new GameRenderer(
+            document.getElementById('gameCanvas'),
+            document.getElementById('nextCanvas'),
+            MAIN.GRID_SIZE
+        );
+    }
+
+    // 绑定键盘事件
+    bindKeyboardEvents() {
+        document.addEventListener('keydown', (event) => {
+            if (this.gameState !== GAME_STATES.PLAYING) return;
+
+            switch (event.code) {
+                case 'ArrowLeft':
+                    this.board.movePiece(-1, 0);
+                    break;
+                case 'ArrowRight':
+                    this.board.movePiece(1, 0);
+                    break;
+                case 'ArrowDown':
+                    if (this.board.movePiece(0, 1)) {
+                        this.score += GAME_CONFIG.SCORING.SOFT_DROP;
+                        this.updateScore();
+                    }
+                    break;
+                case 'ArrowUp':
+                    this.board.rotatePiece();
+                    break;
+                case 'Space':
+                    const linesCleared = this.board.hardDrop();
+                    this.score += GAME_CONFIG.SCORING.HARD_DROP *
+                        (this.board.height - this.board.currentPiece.y);
+                    this.handleLineClear(linesCleared);
+                    break;
+            }
+        });
+    }
+
+    // 开始游戏
+    startGame() {
+        this.gameState = GAME_STATES.PLAYING;
+        this.score = 0;
+        this.level = 1;
+        this.lines = 0;
+        this.board = new GameBoard(
+            GAME_CONFIG.CANVAS.MAIN.WIDTH / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE,
+            GAME_CONFIG.CANVAS.MAIN.HEIGHT / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE
+        );
+        this.updateScore();
+        this.spawnNextPiece();
+        this.gameLoop();
+    }
+
+    // 暂停游戏
+    togglePause() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.gameState = GAME_STATES.PAUSED;
+            cancelAnimationFrame(this.animationId);
+        } else if (this.gameState === GAME_STATES.PAUSED) {
+            this.gameState = GAME_STATES.PLAYING;
+            this.lastTime = 0;
+            this.gameLoop();
+        }
+    }
+
+    // 游戏结束
+    gameOver() {
+        this.gameState = GAME_STATES.GAME_OVER;
+        cancelAnimationFrame(this.animationId);
+        // TODO: 显示游戏结束界面
+    }
+
+    // 生成下一个方块
+    spawnNextPiece() {
+        if (!this.board.currentPiece) {
+            this.board.currentPiece = this.board.nextPiece || this.board.spawnPiece();
+            this.board.nextPiece = this.board.spawnPiece();
+
+            // 检查游戏是否结束
+            if (this.board.checkCollision(this.board.currentPiece)) {
+                this.gameOver();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 处理消行
+    handleLineClear(linesCleared) {
+        if (linesCleared > 0) {
+            this.lines += linesCleared;
+            this.score += GAME_CONFIG.SCORING.LINE_CLEAR[linesCleared] * this.level;
+            this.level = Math.floor(this.lines / 10) + 1;
+            this.updateScore();
+        }
+    }
+
+    // 更新分数显示
+    updateScore() {
+        document.getElementById('score').textContent = this.score;
+        document.getElementById('level').textContent = this.level;
+        document.getElementById('lines').textContent = this.lines;
+    }
+
+    // 游戏主循环
+    gameLoop(time = 0) {
+        if (this.lastTime === 0) {
+            this.lastTime = time;
+        }
+
+        const deltaTime = time - this.lastTime;
+        this.dropCounter += deltaTime;
+
+        // 根据当前等级计算下落速度
+        const dropInterval = this.settingsManager.getDropSpeed() / this.level;
+
+        if (this.dropCounter > dropInterval) {
+            if (!this.board.movePiece(0, 1)) {
+                this.board.lockPiece();
+                const linesCleared = this.board.clearLines();
+                this.handleLineClear(linesCleared);
+                if (!this.spawnNextPiece()) {
+                    return;
+                }
+            }
+            this.dropCounter = 0;
+        }
+
+        // 渲染游戏画面
+        this.renderer.renderBoard(this.board);
+        this.renderer.renderNextPiece(this.board.nextPiece);
+
+        this.lastTime = time;
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.animationId = requestAnimationFrame(this.gameLoop.bind(this));
+        }
+    }
+}
+
 // 等待DOM完全加载
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化管理器
     const settingsManager = new SettingsManager();
     const screenManager = new GameScreenManager();
+    const gameController = new GameController(settingsManager, screenManager);
 
     // 获取DOM元素
     const startButton = document.getElementById('startGame');
@@ -153,20 +329,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 开始游戏按钮点击事件
     startButton.addEventListener('click', () => {
         screenManager.showGameScreen();
-        // TODO: 在后续任务中实现游戏启动逻辑
+        gameController.startGame();
     });
 
     // 暂停按钮点击事件
     pauseButton.addEventListener('click', () => {
-        screenManager.togglePause();
-        pauseButton.textContent = screenManager.isPaused ? '继续' : '暂停';
+        gameController.togglePause();
+        pauseButton.textContent = gameController.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
     });
 
     // 退出按钮点击事件
     quitButton.addEventListener('click', () => {
         if (confirm('确定要退出游戏吗？')) {
             screenManager.showStartScreen();
-            // TODO: 在后续任务中实现游戏重置逻辑
+            gameController.gameState = GAME_STATES.IDLE;
+            cancelAnimationFrame(gameController.animationId);
         }
     });
 
