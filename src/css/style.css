@@ -515,3 +515,111 @@ body {
     color: var(--color-accent);
     text-shadow: 0 0 5px rgba(255, 182, 193, 0.3);
 }
+
+/* 游戏结束弹窗样式 */
+.game-over-content {
+    text-align: center;
+    max-width: 400px;
+}
+
+.game-over-content .modal-header {
+    margin-bottom: 2rem;
+}
+
+.game-over-content .modal-header h2 {
+    width: 100%;
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.final-score {
+    background-color: var(--color-background);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-normal);
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.score-row:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.final-score .score-label {
+    font-size: 1.2rem;
+    color: var(--color-text);
+}
+
+.final-score .score-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+#finalHighScore {
+    color: var(--color-accent);
+    text-shadow: 0 0 5px rgba(255, 182, 193, 0.3);
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.game-over-buttons .game-button {
+    flex: 1;
+    max-width: 150px;
+}
+
+/* 游戏结束动画 */
+@keyframes gameOverSlideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.game-over-content {
+    animation: gameOverSlideIn 0.5s ease-out;
+}
+
+/* 响应式设计补充 */
+@media (max-width: 480px) {
+    .game-over-content {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .game-over-content .modal-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .final-score .score-label {
+        font-size: 1rem;
+    }
+
+    .final-score .score-value {
+        font-size: 1.3rem;
+    }
+
+    .game-over-buttons {
+        flex-direction: column;
+    }
+
+    .game-over-buttons .game-button {
+        max-width: none;
+    }
+}

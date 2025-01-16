@@ -163,6 +163,7 @@ class GameController {
         this.board = null;
         this.renderer = null;
         this.animationId = null;
+        this.gameOverModal = document.getElementById('gameOverModal');
 
         // 初始化游戏板和渲染器
         this.initializeGame();
@@ -255,7 +256,50 @@ class GameController {
     gameOver() {
         this.gameState = GAME_STATES.GAME_OVER;
         cancelAnimationFrame(this.animationId);
-        // TODO: 显示游戏结束界面
+
+        // 保存最高分
+        this.saveHighScore();
+
+        // 更新游戏结束弹窗的分数显示
+        document.getElementById('finalScore').textContent = this.score;
+        document.getElementById('finalHighScore').textContent = this.highScore;
+
+        // 显示游戏结束弹窗
+        this.gameOverModal.classList.add('show');
+    }
+
+    // 重新开始游戏
+    restartGame() {
+        // 隐藏游戏结束弹窗
+        this.gameOverModal.classList.remove('show');
+
+        // 重置游戏状态
+        this.score = 0;
+        this.level = 1;
+        this.lines = 0;
+        this.combo = 0;
+
+        // 重新初始化游戏板
+        this.initializeGame();
+
+        // 更新分数显示
+        this.updateScore();
+
+        // 开始新游戏
+        this.startGame();
+    }
+
+    // 退出到主菜单
+    exitToMenu() {
+        // 隐藏游戏结束弹窗
+        this.gameOverModal.classList.remove('show');
+
+        // 返回开始界面
+        this.screenManager.showStartScreen();
+
+        // 重置游戏状态
+        this.gameState = GAME_STATES.IDLE;
+        cancelAnimationFrame(this.animationId);
     }
 
     // 生成下一个方块
@@ -441,5 +485,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.remove('clicked');
             }, 300);
         });
+    });
+
+    // 游戏结束相关事件处理
+    const restartButton = document.getElementById('restartGame');
+    const exitButton = document.getElementById('exitGame');
+
+    restartButton.addEventListener('click', () => {
+        gameController.restartGame();
+    });
+
+    exitButton.addEventListener('click', () => {
+        gameController.exitToMenu();
     });
 });
