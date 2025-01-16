@@ -102,20 +102,22 @@
                 <!-- 用户信息设置 -->
                 <div class="settings-section">
                     <h3>个人信息</h3>
-                    <div class="avatar-section">
-                        <div class="avatar-preview">
-                            <img id="avatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
-                            <div class="avatar-overlay">
-                                <span>点击更换头像</span>
+                    <div class="personal-info-content">
+                        <div class="avatar-section">
+                            <div class="avatar-preview">
+                                <img id="avatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                                <div class="avatar-overlay">
+                                    <span>点击更换头像</span>
+                                </div>
                             </div>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
                         </div>
-                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-                    </div>
-                    <div class="username-section">
-                        <div class="input-group">
-                            <label for="usernameInput">用户名</label>
-                            <input type="text" id="usernameInput" maxlength="20" placeholder="请输入用户名">
-                            <span class="input-hint">2-20个字符，支持中英文和数字</span>
+                        <div class="username-section">
+                            <div class="input-group">
+                                <label for="usernameInput">用户名</label>
+                                <input type="text" id="usernameInput" maxlength="20" placeholder="请输入用户名">
+                                <span class="input-hint">2-20个字符，支持中英文和数字</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,7 +143,84 @@
                         </label>
                     </div>
                 </div>
-                <button id="saveSettings" class="game-button">保存设置</button>
+
+                <!-- 按键设置 -->
+                <div class="settings-section">
+                    <h3>按键设置 <a href="#" id="restoreDefaultKeys">恢复默认按键</a></h3>
+                    <div class="key-settings">
+                        <div class="key-setting-row">
+                            <span class="key-label">左移</span>
+                            <div class="key-buttons">
+                                <div class="key-button" data-action="moveLeft" data-type="primary">
+                                    <span class="key-text">←</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                                <div class="key-button" data-action="moveLeft" data-type="secondary">
+                                    <span class="key-text">H</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="key-setting-row">
+                            <span class="key-label">右移</span>
+                            <div class="key-buttons">
+                                <div class="key-button" data-action="moveRight" data-type="primary">
+                                    <span class="key-text">→</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                                <div class="key-button" data-action="moveRight" data-type="secondary">
+                                    <span class="key-text">L</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="key-setting-row">
+                            <span class="key-label">下移</span>
+                            <div class="key-buttons">
+                                <div class="key-button" data-action="moveDown" data-type="primary">
+                                    <span class="key-text">↓</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                                <div class="key-button" data-action="moveDown" data-type="secondary">
+                                    <span class="key-text">J</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="key-setting-row">
+                            <span class="key-label">旋转</span>
+                            <div class="key-buttons">
+                                <div class="key-button" data-action="rotate" data-type="primary">
+                                    <span class="key-text">空格</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                                <div class="key-button" data-action="rotate" data-type="secondary">
+                                    <span class="key-text">K</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="key-setting-row">
+                            <span class="key-label">硬降</span>
+                            <div class="key-buttons">
+                                <div class="key-button" data-action="hardDrop" data-type="primary">
+                                    <span class="key-text">F</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                                <div class="key-button" data-action="hardDrop" data-type="secondary">
+                                    <span class="key-text">W</span>
+                                    <button class="key-clear">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="key-settings-help">
+                        <p>点击按键区域设置新按键，点击 × 清除按键。每个功能必须保留至少一个按键。</p>
+                    </div>
+                </div>
+                <div class="settings-actions">
+                    <button id="saveSettings" class="game-button">保存设置</button>
+                </div>
             </div>
         </div>
     </div>

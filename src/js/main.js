@@ -42,9 +42,12 @@ class SettingsManager {
             avatar: null,
             username: ''
         };
-        this.loadSettings();
+
+        this.keySettingsManager = new KeySettingsManager();
         this.initializeAvatarUpload();
         this.initializeUsernameInput();
+        this.initializeKeySettings();
+        this.loadSettings();
     }
 
     // 加载设置
@@ -62,6 +65,8 @@ class SettingsManager {
                 document.getElementById('usernameInput').value = this.settings.username;
                 document.getElementById('gameUsername').textContent = this.settings.username;
             }
+            // 加载难度设置
+            document.querySelector(`input[value="${this.settings.difficulty}"]`).checked = true;
         }
     }
 
@@ -262,6 +267,211 @@ class SettingsManager {
             gameOverAvatar.src = this.avatarUrl;
         }
     }
+
+    // 初始化按键设置
+    initializeKeySettings() {
+        const keyButtons = document.querySelectorAll('.key-button');
+        const restoreDefaultKeys = document.getElementById('restoreDefaultKeys');
+        let listeningButton = null;
+
+        // 更新按键显示
+        const updateKeyDisplay = () => {
+            keyButtons.forEach(button => {
+                const action = button.dataset.action;
+                const type = button.dataset.type;
+                const keyCode = this.keySettingsManager.keySettings[action][type];
+                const keyText = button.querySelector('.key-text');
+                keyText.textContent = this.getKeyDisplayName(keyCode);
+            });
+        };
+
+        // 获取按键显示名称
+        this.getKeyDisplayName = (keyCode) => {
+            if (!keyCode) return '未设置';
+            switch (keyCode) {
+                case 'Space': return '空格';
+                case 'ArrowLeft': return '←';
+                case 'ArrowRight': return '→';
+                case 'ArrowDown': return '↓';
+                case 'ArrowUp': return '↑';
+                default: return keyCode.replace('Key', '');
+            }
+        };
+
+        // 处理按键点击
+        keyButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // 如果点击的是清除按钮，不进入监听模式
+                if (e.target.classList.contains('key-clear')) return;
+
+                // 如果已经在监听其他按钮，先取消之前的监听
+                if (listeningButton) {
+                    listeningButton.classList.remove('listening');
+                }
+
+                // 设置当前按钮为监听状态
+                button.classList.add('listening');
+                listeningButton = button;
+                button.querySelector('.key-text').textContent = '请按键...';
+            });
+
+            // 处理清除按钮点击
+            const clearButton = button.querySelector('.key-clear');
+            clearButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = button.dataset.action;
+                const type = button.dataset.type;
+                if (this.keySettingsManager.clearKey(action, type)) {
+                    updateKeyDisplay();
+                } else {
+                    alert('每个功能必须保留至少一个按键！');
+                }
+            });
+        });
+
+        // 监听键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (!listeningButton) return;
+
+            e.preventDefault();
+            const action = listeningButton.dataset.action;
+            const type = listeningButton.dataset.type;
+
+            // 设置新按键
+            if (this.keySettingsManager.setKey(action, type, e.code)) {
+                listeningButton.classList.remove('listening');
+                listeningButton = null;
+                updateKeyDisplay();
+            } else {
+                alert('该按键已被其他功能使用！');
+            }
+        });
+
+        // 点击其他区域取消监听
+        document.addEventListener('click', (e) => {
+            if (listeningButton && !e.target.closest('.key-button')) {
+                listeningButton.classList.remove('listening');
+                listeningButton = null;
+                updateKeyDisplay();
+            }
+        });
+
+        // 恢复默认按键
+        restoreDefaultKeys.addEventListener('click', () => {
+            if (confirm('确定要恢复默认按键设置吗？')) {
+                this.keySettingsManager.restoreDefaults();
+                updateKeyDisplay();
+            }
+        });
+
+        // 初始显示
+        updateKeyDisplay();
+    }
+}
+
+// 按键设置管理器
+class KeySettingsManager {
+    constructor() {
+        this.keySettings = {
+            moveLeft: {
+                primary: 'ArrowLeft',
+                secondary: 'KeyH'
+            },
+            moveRight: {
+                primary: 'ArrowRight',
+                secondary: 'KeyL'
+            },
+            moveDown: {
+                primary: 'ArrowDown',
+                secondary: 'KeyJ'
+            },
+            rotate: {
+                primary: 'Space',
+                secondary: 'KeyK'
+            },
+            hardDrop: {
+                primary: 'KeyF',
+                secondary: 'KeyW'
+            }
+        };
+        this.loadSettings();
+    }
+
+    // 加载按键设置
+    loadSettings() {
+        const savedSettings = localStorage.getItem('tetrisKeySettings');
+        if (savedSettings) {
+            this.keySettings = JSON.parse(savedSettings);
+        }
+    }
+
+    // 保存按键设置
+    saveSettings() {
+        localStorage.setItem('tetrisKeySettings', JSON.stringify(this.keySettings));
+    }
+
+    // 设置按键
+    setKey(action, type, key) {
+        // 检查按键冲突
+        for (const [act, keys] of Object.entries(this.keySettings)) {
+            if (act !== action) {
+                if (keys.primary === key || keys.secondary === key) {
+                    return false; // 按键已被使用
+                }
+            }
+        }
+
+        // 设置新按键
+        this.keySettings[action][type] = key;
+        this.saveSettings();
+        return true;
+    }
+
+    // 清除按键
+    clearKey(action, type) {
+        // 检查是否可以清除
+        const keys = this.keySettings[action];
+        if (type === 'primary' && !keys.secondary || type === 'secondary' && !keys.primary) {
+            return false; // 不能清除唯一的按键
+        }
+
+        this.keySettings[action][type] = null;
+        this.saveSettings();
+        return true;
+    }
+
+    // 恢复默认设置
+    restoreDefaults() {
+        this.keySettings = {
+            moveLeft: {
+                primary: 'ArrowLeft',
+                secondary: 'KeyH'
+            },
+            moveRight: {
+                primary: 'ArrowRight',
+                secondary: 'KeyL'
+            },
+            moveDown: {
+                primary: 'ArrowDown',
+                secondary: 'KeyJ'
+            },
+            rotate: {
+                primary: 'Space',
+                secondary: 'KeyK'
+            },
+            hardDrop: {
+                primary: 'KeyF',
+                secondary: 'KeyW'
+            }
+        };
+        this.saveSettings();
+    }
+
+    // 检查按键是否匹配动作
+    isActionKey(action, key) {
+        const keys = this.keySettings[action];
+        return key === keys.primary || key === keys.secondary;
+    }
 }
 
 // 游戏界面管理器
@@ -346,6 +556,7 @@ class GameController {
     constructor(settingsManager, screenManager) {
         this.settingsManager = settingsManager;
         this.screenManager = screenManager;
+        this.keySettingsManager = this.settingsManager.keySettingsManager;
         this.gameState = GAME_STATES.IDLE;
         this.score = 0;
         this.level = 1;
@@ -396,35 +607,27 @@ class GameController {
         document.addEventListener('keydown', (event) => {
             if (this.gameState !== GAME_STATES.PLAYING) return;
 
-            // 游戏控制按键列表
-            const gameKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'Space', 'KeyF'];
-
-            // 如果是游戏控制按键，阻止默认行为
-            if (gameKeys.includes(event.code)) {
+            // 阻止游戏控制按键的默认行为
+            if (Object.values(this.keySettingsManager.keySettings).some(keys =>
+                event.code === keys.primary || event.code === keys.secondary)) {
                 event.preventDefault();
             }
 
-            switch (event.code) {
-                case 'ArrowLeft':
-                    this.board.movePiece(-1, 0);
-                    break;
-                case 'ArrowRight':
-                    this.board.movePiece(1, 0);
-                    break;
-                case 'ArrowDown':
-                    this.board.movePiece(0, 1);
-                    break;
-                case 'Space':
-                    this.board.rotatePiece();
-                    break;
-                case 'KeyF':
-                    const linesCleared = this.board.hardDrop();
-                    this.handleLineClear(linesCleared);
-                    if (!this.board.update()) {
-                        this.gameOver();
-                        return;
-                    }
-                    break;
+            if (this.keySettingsManager.isActionKey('moveLeft', event.code)) {
+                this.board.movePiece(-1, 0);
+            } else if (this.keySettingsManager.isActionKey('moveRight', event.code)) {
+                this.board.movePiece(1, 0);
+            } else if (this.keySettingsManager.isActionKey('moveDown', event.code)) {
+                this.board.movePiece(0, 1);
+            } else if (this.keySettingsManager.isActionKey('rotate', event.code)) {
+                this.board.rotatePiece();
+            } else if (this.keySettingsManager.isActionKey('hardDrop', event.code)) {
+                const linesCleared = this.board.hardDrop();
+                this.handleLineClear(linesCleared);
+                if (!this.board.update()) {
+                    this.gameOver();
+                    return;
+                }
             }
         });
     }
