@@ -1,3 +1,19 @@
+// 马卡龙色系
+const MACARON_COLORS = [
+    '#FFB5C2',  // 红色
+    '#FFD4B8',  // 橙色
+    '#FFE4B5',  // 黄色
+    '#B5E4D3',  // 绿色
+    '#A5EAFF',  // 蓝色
+    '#B5C9FF',  // 靛色
+    '#E1DCFC'   // 紫色
+];
+
+// 获取随机马卡龙色
+function getRandomMacaronColor() {
+    return MACARON_COLORS[Math.floor(Math.random() * MACARON_COLORS.length)];
+}
+
 // 方块形状定义
 const TETROMINOES = {
     I: {
@@ -71,7 +87,7 @@ class Tetromino {
     constructor(type) {
         this.type = type;
         this.shape = TETROMINOES[type].shape;
-        this.color = TETROMINOES[type].color;
+        this.color = getRandomMacaronColor();
         this.x = 3;
         this.y = 0;
         this.rotation = 0;
@@ -227,6 +243,11 @@ class GameRenderer {
         this.gameCtx = gameCanvas.getContext('2d');
         this.nextCtx = nextCanvas.getContext('2d');
         this.gridSize = gridSize;
+
+        // 设置预览画布尺寸
+        this.nextCanvas = nextCanvas;
+        this.nextCanvas.width = 135;
+        this.nextCanvas.height = 135;
     }
 
     // 清空画布
@@ -283,22 +304,39 @@ class GameRenderer {
     renderNextPiece(piece) {
         if (!piece) return;
 
-        const previewSize = 4;
-        this.clear(this.nextCtx, previewSize * this.gridSize, previewSize * this.gridSize);
-
         const shape = piece.getCurrentShape();
-        const offsetX = (previewSize - shape.length) / 2;
-        const offsetY = (previewSize - shape.length) / 2;
+        const shapeSize = shape.length;
 
-        for (let y = 0; y < shape.length; y++) {
-            for (let x = 0; x < shape[y].length; x++) {
+        // 计算单个格子的大小（确保不超过120px的限制）
+        const maxSize = 120;
+        const gridSize = Math.min(maxSize / shapeSize, 30);
+
+        // 计算居中位置
+        const totalWidth = shapeSize * gridSize;
+        const offsetX = (135 - totalWidth) / 2;
+        const offsetY = (135 - totalWidth) / 2;
+
+        // 清空画布
+        this.clear(this.nextCtx, 135, 135);
+
+        // 绘制方块
+        for (let y = 0; y < shapeSize; y++) {
+            for (let x = 0; x < shapeSize; x++) {
                 if (shape[y][x]) {
-                    this.drawBlock(
-                        this.nextCtx,
-                        x + offsetX,
-                        y + offsetY,
-                        piece.color
-                    );
+                    const drawX = offsetX + x * gridSize;
+                    const drawY = offsetY + y * gridSize;
+
+                    // 绘制方块
+                    this.nextCtx.fillStyle = piece.color;
+                    this.nextCtx.fillRect(drawX, drawY, gridSize, gridSize);
+
+                    // 添加高光效果
+                    this.nextCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    this.nextCtx.fillRect(drawX, drawY, gridSize, gridSize / 4);
+
+                    // 添加边框
+                    this.nextCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    this.nextCtx.strokeRect(drawX, drawY, gridSize, gridSize);
                 }
             }
         }

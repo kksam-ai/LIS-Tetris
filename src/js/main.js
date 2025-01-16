@@ -13,8 +13,8 @@ const GAME_CONFIG = {
             GRID_SIZE: 30
         },
         PREVIEW: {
-            WIDTH: 120,
-            HEIGHT: 120,
+            WIDTH: 135,
+            HEIGHT: 135,
             GRID_SIZE: 30
         }
     },

@@ -513,7 +513,9 @@ body {
 #nextCanvas {
     display: block;
     margin: 0 auto;
-    background-color: var(--color-text);
+    width: 135px;
+    height: 135px;
+    background-color: var(--color-canvas-bg);
     border-radius: 8px;
 }
 
