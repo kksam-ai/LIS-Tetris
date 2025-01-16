@@ -155,6 +155,8 @@ class GameBoard {
                 }
             }
         }
+        // 锁定后清除当前方块，触发新方块生成
+        this.currentPiece = null;
     }
 
     // 清除完整行
@@ -201,6 +203,21 @@ class GameBoard {
         }
         this.lockPiece();
         return this.clearLines();
+    }
+
+    // 更新游戏状态
+    update() {
+        if (!this.currentPiece) {
+            // 如果没有当前方块，生成新的方块
+            this.currentPiece = this.nextPiece || this.spawnPiece();
+            this.nextPiece = this.spawnPiece();
+
+            // 检查游戏是否结束
+            if (this.checkCollision(this.currentPiece)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

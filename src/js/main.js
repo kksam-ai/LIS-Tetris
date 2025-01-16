@@ -216,7 +216,10 @@ class GameController {
             GAME_CONFIG.CANVAS.MAIN.HEIGHT / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE
         );
         this.updateScore();
-        this.spawnNextPiece();
+
+        // 初始化第一个方块
+        this.board.update();
+
         this.gameLoop();
     }
 
@@ -288,7 +291,10 @@ class GameController {
                 this.board.lockPiece();
                 const linesCleared = this.board.clearLines();
                 this.handleLineClear(linesCleared);
-                if (!this.spawnNextPiece()) {
+
+                // 更新游戏状态，检查是否可以继续
+                if (!this.board.update()) {
+                    this.gameOver();
                     return;
                 }
             }
