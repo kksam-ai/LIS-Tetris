@@ -1,15 +1,26 @@
 /* 全局变量 */
 :root {
-    --color-primary: #FFB5C2;    /* 主色调-粉色 */
-    --color-secondary: #95E1D3;  /* 次要色调-薄荷绿 */
-    --color-accent: #F9EAC3;     /* 强调色-淡黄 */
-    --color-background: #F4F0F9; /* 背景色-浅灰紫 */
-    --color-text: #4A4A4A;       /* 文字颜色 */
+    /* 主色调 - 粉绿色系 */
+    --color-primary: #98D8C1;        /* 主要粉绿色 */
+    --color-primary-light: #B5E4D3;  /* 浅粉绿色 */
+    --color-primary-dark: #7AC1A6;   /* 深粉绿色 */
+
+    /* 背景色 */
+    --color-bg-gradient-1: #E8F6F1;  /* 渐变背景色1 */
+    --color-bg-gradient-2: #F9E7E7;  /* 渐变背景色2 */
+
+    /* 文字颜色 */
+    --color-text: #4A6670;           /* 主要文字颜色 */
+    --color-text-light: #7A8B93;     /* 浅色文字 */
+
+    /* 其他颜色 */
+    --color-white: #FFFFFF;          /* 纯白色 */
+    --color-canvas-bg: #F5F9F7;      /* 游戏区域背景色 */
+    --grid-border-color: #E0EBE6;    /* 网格线颜色 */
+
+    /* 阴影 */
     --shadow-normal: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.2);
-    --modal-background: rgba(0, 0, 0, 0.5);
-    --grid-border-color: rgba(255, 255, 255, 0.2);
-    --game-border: rgba(255, 255, 255, 0.5);
+    --shadow-large: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* 重置样式 */
@@ -20,25 +31,19 @@
 }
 
 body {
-    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background-color: var(--color-background);
-    color: var(--color-text);
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
+    color: var(--color-text);
 }
 
 /* 游戏容器 */
 .game-container {
-    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 2rem;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: var(--shadow-normal);
-    max-width: 90%;
-    width: 400px;
-    animation: fadeIn 0.5s ease-out;
 }
 
 /* 游戏标题 */
@@ -59,17 +64,15 @@ body {
 
 /* 按钮样式 */
 .game-button {
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
+    background: var(--color-primary);
+    color: var(--color-white);
     border: none;
-    border-radius: 10px;
-    background-color: var(--color-primary);
-    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-normal);
-    position: relative;
-    overflow: hidden;
 }
 
 .game-button::after {
@@ -102,13 +105,14 @@ body {
 }
 
 .game-button:hover {
+    background: var(--color-primary-dark);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-    background-color: var(--color-secondary);
+    box-shadow: var(--shadow-large);
 }
 
-.game-button:active {
-    transform: translateY(0);
+.game-button.clicked {
+    transform: scale(0.95);
+    box-shadow: var(--shadow-normal);
 }
 
 /* 动画定义 */
@@ -157,33 +161,49 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--modal-background);
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .modal.show {
     display: flex;
-    opacity: 1;
-    animation: fadeIn 0.3s ease-out;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .modal-content {
-    background: white;
-    border-radius: 20px;
+    background: var(--color-white);
     padding: 2rem;
-    width: 90%;
+    border-radius: 15px;
+    box-shadow: var(--shadow-large);
     max-width: 500px;
-    margin: auto;
+    width: 90%;
     position: relative;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
-    box-shadow: var(--shadow-normal);
+    animation: modalContentSlideIn 0.3s ease-out;
 }
 
-.modal.show .modal-content {
-    transform: translateY(0);
+@keyframes modalContentSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .modal-header {
@@ -194,30 +214,56 @@ body {
 }
 
 .modal-header h2 {
-    color: var(--color-primary);
     margin: 0;
-    font-size: 1.8rem;
+    color: var(--color-text);
+    font-size: 1.5rem;
 }
 
 .close-button {
     background: none;
     border: none;
-    font-size: 2rem;
-    color: var(--color-text);
+    font-size: 1.5rem;
+    color: var(--color-text-light);
     cursor: pointer;
     padding: 0.5rem;
-    line-height: 1;
     transition: color 0.3s ease;
 }
 
 .close-button:hover {
-    color: var(--color-primary);
+    color: var(--color-text);
 }
 
 .modal-body {
-    text-align: left;
+    color: var(--color-text);
 }
 
+/* 游戏结束模态框特殊样式 */
+.game-over-content {
+    text-align: center;
+}
+
+.final-score {
+    margin: 2rem 0;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--color-canvas-bg);
+    border-radius: 10px;
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* 设置模态框特殊样式 */
 .settings-section {
     margin-bottom: 2rem;
 }
@@ -225,16 +271,15 @@ body {
 .settings-section h3 {
     color: var(--color-text);
     margin-bottom: 1rem;
-    font-size: 1.2rem;
 }
 
-/* 自定义单选按钮样式 */
 .difficulty-options {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
+/* 自定义单选按钮样式 */
 .radio-container {
     display: flex;
     align-items: center;
@@ -322,65 +367,101 @@ body {
 
 /* 分数区域 */
 .score-container {
-    position: relative;
+    background: var(--color-white);
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
-    background-color: var(--color-background-light);
-    border-radius: 10px;
-    box-shadow: var(--shadow-normal);
     margin-bottom: 1rem;
 }
 
 .score-item {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.5rem;
+    text-align: center;
 }
 
 .score-label {
+    display: block;
+    color: var(--color-text-light);
     font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
 
 .score-value {
-    font-size: 1.5rem;
+    color: var(--color-text);
+    font-size: 1.2rem;
     font-weight: bold;
-    color: var(--color-primary);
 }
 
 /* 游戏主区域 */
 .game-area {
     display: flex;
     gap: 2rem;
+    justify-content: center;
     align-items: flex-start;
+    margin: 0 auto;
+    max-width: 900px;
 }
 
 /* 主游戏区 */
 .main-area {
     flex: 1;
-    background: white;
-    padding: 1rem;
+    max-width: 600px;
+    background: var(--color-white);
+    padding: 1.5rem;
     border-radius: 15px;
     box-shadow: var(--shadow-normal);
+    display: flex;
+    justify-content: center;
 }
 
 #gameCanvas {
     display: block;
-    background-color: var(--color-text);
+    background-color: var(--color-canvas-bg);
     border-radius: 8px;
 }
 
 /* 信息区 */
 .info-area {
-    width: 200px;
+    width: 250px;
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* 个人信息 */
+.user-info {
+    background: var(--color-white);
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
+    display: flex;
+    align-items: center;
     gap: 1rem;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: var(--shadow-normal);
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-details {
+    flex: 1;
+}
+
+#gameUsername {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    font-weight: 500;
 }
 
 /* 下一个方块预览 */
@@ -622,4 +703,149 @@ body {
     .game-over-buttons .game-button {
         max-width: none;
     }
+}
+
+/* Logo样式 */
+.logo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.game-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease;
+}
+
+.game-logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-container h1 {
+    color: var(--color-text);
+    font-size: 2rem;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 开始界面 */
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* 头像设置 */
+.avatar-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-preview {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow-normal);
+    transition: transform 0.3s ease;
+}
+
+.avatar-preview:hover {
+    transform: scale(1.05);
+}
+
+.avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-preview:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.avatar-overlay span {
+    color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* 用户名设置 */
+.username-section {
+    margin-top: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    padding: 0.8rem;
+    border: 2px solid var(--color-primary-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--color-text);
+    background: var(--color-white);
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.input-group input::placeholder {
+    color: var(--color-text-light);
+}
+
+.input-hint {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+}
+
+.input-error {
+    border-color: #ff6b6b !important;
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
 }

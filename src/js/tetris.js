@@ -7,7 +7,7 @@ const TETROMINOES = {
             [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
-        color: '#FFB5C2' // 粉色
+        color: '#98D8C1' // 主粉绿色
     },
     J: {
         shape: [
@@ -15,7 +15,7 @@ const TETROMINOES = {
             [1, 1, 1],
             [0, 0, 0]
         ],
-        color: '#95E1D3' // 薄荷绿
+        color: '#B5E4D3' // 浅粉绿色
     },
     L: {
         shape: [
@@ -23,14 +23,14 @@ const TETROMINOES = {
             [1, 1, 1],
             [0, 0, 0]
         ],
-        color: '#F9EAC3' // 淡黄
+        color: '#7AC1A6' // 深粉绿色
     },
     O: {
         shape: [
             [1, 1],
             [1, 1]
         ],
-        color: '#FFDAC1' // 淡橙
+        color: '#E8F6F1' // 最浅粉绿色
     },
     S: {
         shape: [
@@ -38,7 +38,7 @@ const TETROMINOES = {
             [1, 1, 0],
             [0, 0, 0]
         ],
-        color: '#B5D8EB' // 淡蓝
+        color: '#A8DEC9' // 中浅粉绿色
     },
     T: {
         shape: [
@@ -46,7 +46,7 @@ const TETROMINOES = {
             [1, 1, 1],
             [0, 0, 0]
         ],
-        color: '#E2BEF1' // 淡紫
+        color: '#89CEB4' // 中深粉绿色
     },
     Z: {
         shape: [
@@ -54,7 +54,7 @@ const TETROMINOES = {
             [0, 1, 1],
             [0, 0, 0]
         ],
-        color: '#FFB2A6' // 珊瑚粉
+        color: '#C2EBD9' // 浅粉绿色
     }
 };
 

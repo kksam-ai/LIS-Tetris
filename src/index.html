@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>俄罗斯方块</title>
+    <title>马卡龙俄罗斯方块</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- 初始界面 -->
     <div id="startScreen" class="game-container">
-        <h1 class="game-title">俄罗斯方块</h1>
+        <div class="logo-container">
+            <img src="assets/images/logo.svg" alt="马卡龙俄罗斯方块" class="game-logo">
+            <h1>马卡龙俄罗斯方块</h1>
+        </div>
         <div class="button-container">
             <button id="startGame" class="game-button">开始游戏</button>
             <button id="settings" class="game-button">设置</button>
@@ -46,6 +50,15 @@
             </div>
             <!-- 信息区 -->
             <div class="info-area">
+                <!-- 个人信息 -->
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img id="gameAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                    </div>
+                    <div class="user-details">
+                        <span id="gameUsername">玩家</span>
+                    </div>
+                </div>
                 <!-- 下一个方块预览 -->
                 <div class="next-piece">
                     <h3>下一个</h3>
@@ -77,6 +90,28 @@
                 <button id="closeSettings" class="close-button">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- 用户信息设置 -->
+                <div class="settings-section">
+                    <h3>个人信息</h3>
+                    <div class="avatar-section">
+                        <div class="avatar-preview">
+                            <img id="avatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                            <div class="avatar-overlay">
+                                <span>点击更换头像</span>
+                            </div>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="username-section">
+                        <div class="input-group">
+                            <label for="usernameInput">用户名</label>
+                            <input type="text" id="usernameInput" maxlength="20" placeholder="请输入用户名">
+                            <span class="input-hint">2-20个字符，支持中英文和数字</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 游戏难度设置 -->
                 <div class="settings-section">
                     <h3>游戏难度</h3>
                     <div class="difficulty-options">

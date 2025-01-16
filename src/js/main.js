@@ -19,8 +19,6 @@ const GAME_CONFIG = {
         }
     },
     SCORING: {
-        SOFT_DROP: 1,      // 软降（加速下落）得分
-        HARD_DROP: 2,      // 硬降（直接落下）得分
         LINE_CLEAR: {      // 消行得分
             1: 100,        // 消除1行
             2: 300,        // 消除2行
@@ -40,9 +38,13 @@ const GAME_CONFIG = {
 class SettingsManager {
     constructor() {
         this.settings = {
-            difficulty: GAME_CONFIG.DEFAULT_DIFFICULTY
+            difficulty: GAME_CONFIG.DEFAULT_DIFFICULTY,
+            avatar: null,
+            username: ''
         };
         this.loadSettings();
+        this.initializeAvatarUpload();
+        this.initializeUsernameInput();
     }
 
     // 加载设置
@@ -50,12 +52,116 @@ class SettingsManager {
         const savedSettings = localStorage.getItem('tetrisSettings');
         if (savedSettings) {
             this.settings = JSON.parse(savedSettings);
+            // 加载头像
+            if (this.settings.avatar) {
+                document.getElementById('avatarPreview').src = this.settings.avatar;
+                document.getElementById('gameAvatarPreview').src = this.settings.avatar;
+            }
+            // 加载用户名
+            if (this.settings.username) {
+                document.getElementById('usernameInput').value = this.settings.username;
+                document.getElementById('gameUsername').textContent = this.settings.username;
+            }
         }
     }
 
     // 保存设置
     saveSettings() {
         localStorage.setItem('tetrisSettings', JSON.stringify(this.settings));
+        this.updateGameInfo();
+    }
+
+    // 更新游戏界面的个人信息
+    updateGameInfo() {
+        const gameAvatar = document.getElementById('gameAvatarPreview');
+        const gameUsername = document.getElementById('gameUsername');
+
+        // 更新头像
+        if (this.settings.avatar) {
+            gameAvatar.src = this.settings.avatar;
+        } else {
+            gameAvatar.src = 'assets/images/default-avatar.svg';
+        }
+
+        // 更新用户名
+        if (this.settings.username) {
+            gameUsername.textContent = this.settings.username;
+        } else {
+            gameUsername.textContent = '玩家';
+        }
+    }
+
+    // 初始化头像上传功能
+    initializeAvatarUpload() {
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarSection = document.querySelector('.avatar-preview');
+
+        // 点击头像区域触发文件选择
+        avatarSection.addEventListener('click', () => {
+            avatarInput.click();
+        });
+
+        // 处理文件选择
+        avatarInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const processedImage = await this.processImage(file);
+                    avatarPreview.src = processedImage;
+                    this.settings.avatar = processedImage;
+                    this.saveSettings();
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    alert('图片处理失败，请重试');
+                }
+            }
+        });
+    }
+
+    // 处理图片
+    async processImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // 创建canvas进行图片处理
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // 设置输出尺寸
+                    const size = 100;
+                    canvas.width = size;
+                    canvas.height = size;
+
+                    // 绘制圆形裁剪区域
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                    ctx.clip();
+
+                    // 计算缩放和位置以保持图片比例
+                    const scale = Math.max(size/img.width, size/img.height);
+                    const x = (size - img.width * scale) / 2;
+                    const y = (size - img.height * scale) / 2;
+
+                    // 绘制图片
+                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+                    // 转换为base64
+                    try {
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        resolve(dataUrl);
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 
     // 获取当前难度对应的下落速度
@@ -67,6 +173,70 @@ class SettingsManager {
     setDifficulty(difficulty) {
         this.settings.difficulty = difficulty;
         this.saveSettings();
+    }
+
+    // 初始化用户名输入功能
+    initializeUsernameInput() {
+        const usernameInput = document.getElementById('usernameInput');
+        const inputHint = usernameInput.nextElementSibling;
+        let errorMessage = null;
+
+        // 验证用户名
+        const validateUsername = (username) => {
+            if (username.length < 2) {
+                return '用户名至少需要2个字符';
+            }
+            if (username.length > 20) {
+                return '用户名最多20个字符';
+            }
+            if (!/^[\u4e00-\u9fa5a-zA-Z0-9]+$/.test(username)) {
+                return '用户名只能包含中文、英文和数字';
+            }
+            return null;
+        };
+
+        // 显示错误信息
+        const showError = (message) => {
+            if (!errorMessage) {
+                errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                inputHint.parentNode.insertBefore(errorMessage, inputHint.nextSibling);
+            }
+            errorMessage.textContent = message;
+            usernameInput.classList.add('input-error');
+        };
+
+        // 清除错误信息
+        const clearError = () => {
+            if (errorMessage) {
+                errorMessage.remove();
+                errorMessage = null;
+            }
+            usernameInput.classList.remove('input-error');
+        };
+
+        // 处理输入事件
+        usernameInput.addEventListener('input', (e) => {
+            clearError();
+            const username = e.target.value.trim();
+            const error = validateUsername(username);
+
+            if (error) {
+                showError(error);
+            } else {
+                this.settings.username = username;
+                this.saveSettings();
+            }
+        });
+
+        // 处理失焦事件
+        usernameInput.addEventListener('blur', () => {
+            const username = usernameInput.value.trim();
+            if (username && !validateUsername(username)) {
+                this.settings.username = username;
+                this.saveSettings();
+            }
+        });
     }
 }
 
@@ -202,6 +372,14 @@ class GameController {
         document.addEventListener('keydown', (event) => {
             if (this.gameState !== GAME_STATES.PLAYING) return;
 
+            // 游戏控制按键列表
+            const gameKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'Space'];
+
+            // 如果是游戏控制按键，阻止默认行为
+            if (gameKeys.includes(event.code)) {
+                event.preventDefault();
+            }
+
             switch (event.code) {
                 case 'ArrowLeft':
                     this.board.movePiece(-1, 0);
@@ -210,10 +388,7 @@ class GameController {
                     this.board.movePiece(1, 0);
                     break;
                 case 'ArrowDown':
-                    if (this.board.movePiece(0, 1)) {
-                        this.score += GAME_CONFIG.SCORING.SOFT_DROP;
-                        this.updateScore();
-                    }
+                    this.board.movePiece(0, 1);
                     break;
                 case 'Space':
                     this.board.rotatePiece();
@@ -243,12 +418,14 @@ class GameController {
     // 暂停游戏
     togglePause() {
         if (this.gameState === GAME_STATES.PLAYING) {
+            console.log('Game paused');
             this.gameState = GAME_STATES.PAUSED;
             cancelAnimationFrame(this.animationId);
         } else if (this.gameState === GAME_STATES.PAUSED) {
+            console.log('Game resumed');
             this.gameState = GAME_STATES.PLAYING;
-            this.lastTime = 0;
-            this.gameLoop();
+            // 不重置lastTime，保持当前时间
+            this.gameLoop(performance.now());
         }
     }
 
@@ -374,8 +551,11 @@ class GameController {
 
     // 游戏主循环
     gameLoop(time = 0) {
+        // 如果是第一次运行或者从暂停恢复
         if (this.lastTime === 0) {
             this.lastTime = time;
+            this.dropCounter = 0;
+            console.log('Game loop initialized/resumed');
         }
 
         const deltaTime = time - this.lastTime;
@@ -383,6 +563,11 @@ class GameController {
 
         // 根据当前等级计算下落速度
         const dropInterval = this.settingsManager.getDropSpeed() / this.level;
+
+        // 添加日志输出
+        if (this.dropCounter > dropInterval) {
+            console.log(`Drop triggered - Counter: ${this.dropCounter}, Interval: ${dropInterval}`);
+        }
 
         if (this.dropCounter > dropInterval) {
             if (!this.board.movePiece(0, 1)) {
