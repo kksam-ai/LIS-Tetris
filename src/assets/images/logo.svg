@@ -4,11 +4,11 @@
     <rect x="0" y="0" width="200" height="200" fill="#98D8C1" rx="20" ry="20"/>
 
     <!-- T形方块 -->
-    <g transform="translate(50, 50)">
-        <rect x="0" y="0" width="40" height="40" fill="#E8F6F1" rx="5" ry="5"/>
-        <rect x="40" y="0" width="40" height="40" fill="#B5E4D3" rx="5" ry="5"/>
-        <rect x="80" y="0" width="40" height="40" fill="#E8F6F1" rx="5" ry="5"/>
-        <rect x="40" y="40" width="40" height="40" fill="#7AC1A6" rx="5" ry="5"/>
-        <rect x="40" y="80" width="40" height="40" fill="#89CEB4" rx="5" ry="5"/>
+    <g transform="translate(50, 40)">
+        <rect x="0" y="0" width="40" height="40" fill="#A5EAFF" rx="5" ry="5"/>
+        <rect x="40" y="0" width="40" height="40" fill="#BEFFF8" rx="5" ry="5"/>
+        <rect x="80" y="0" width="40" height="40" fill="#E1DCFC" rx="5" ry="5"/>
+        <rect x="40" y="40" width="40" height="40" fill="#9EC4F6" rx="5" ry="5"/>
+        <rect x="40" y="80" width="40" height="40" fill="#D2C0F9" rx="5" ry="5"/>
     </g>
 </svg>
