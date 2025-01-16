@@ -238,6 +238,30 @@ class SettingsManager {
             }
         });
     }
+
+    // 更新用户信息显示
+    updateUserInfo() {
+        const gameUsername = document.getElementById('gameUsername');
+        const gameAvatarPreview = document.getElementById('gameAvatarPreview');
+        const gameOverUsername = document.getElementById('gameOverUsername');
+        const gameOverAvatar = document.getElementById('gameOverAvatar');
+
+        // 更新游戏界面的用户信息
+        if (gameUsername) {
+            gameUsername.textContent = this.username;
+        }
+        if (gameAvatarPreview) {
+            gameAvatarPreview.src = this.avatarUrl;
+        }
+
+        // 更新游戏结束界面的用户信息
+        if (gameOverUsername) {
+            gameOverUsername.textContent = this.username;
+        }
+        if (gameOverAvatar) {
+            gameOverAvatar.src = this.avatarUrl;
+        }
+    }
 }
 
 // 游戏界面管理器

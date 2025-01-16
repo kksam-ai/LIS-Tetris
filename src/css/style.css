@@ -430,14 +430,73 @@ body {
 
 /* 游戏界面 */
 .game-screen {
-    display: none;
+    display: flex;
     flex-direction: column;
-    gap: 2rem;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+/* 顶部区域 */
+.game-header {
+    width: 630px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-logo-small {
+    width: 40px;
+    height: 40px;
+}
+
+.game-title-small {
+    font-size: 1.5rem;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-info-small {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-primary);
+}
+
+.user-avatar-small img {
     width: 100%;
-    max-width: 1000px;
-    min-width: 900px;
-    margin: 2rem auto;
-    padding: 2rem;
+    height: 100%;
+    object-fit: cover;
+}
+
+#gameUsername {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-text);
 }
 
 /* 分数区域 */
@@ -448,7 +507,6 @@ body {
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: var(--shadow-normal);
-    margin-bottom: 1rem;
     max-width: 630px;
     width: 100%;
     margin-left: auto;
@@ -511,50 +569,28 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    height: 600px; /* 与主游戏区高度一致 */
+    height: 648px;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-normal);
 }
 
 /* 个人信息 */
 .user-info {
-    background: var(--color-white);
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: var(--shadow-normal);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    display: none;
 }
 
 .user-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: var(--shadow-normal);
-}
-
-.user-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    display: none;
 }
 
 .user-details {
-    flex: 1;
-}
-
-#gameUsername {
-    font-size: 1.1rem;
-    color: var(--color-text);
-    font-weight: 500;
+    display: none;
 }
 
 /* 下一个方块预览 */
 .next-piece {
-    background: white;
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: var(--shadow-normal);
     text-align: center;
 }
 
@@ -575,23 +611,20 @@ body {
 
 /* 控制说明 */
 .controls-info {
-    background: white;
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: var(--shadow-normal);
-    flex-shrink: 1; /* 允许区域收缩 */
+    text-align: center;
+    margin-top: 1.5rem;
 }
 
 .controls-info h3 {
     color: var(--color-text);
     margin-bottom: 0.8rem;
     font-size: 1rem;
-    text-align: center;
 }
 
 .controls-info ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .controls-info li {
@@ -605,8 +638,9 @@ body {
 .game-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-top: auto; /* 将控制按钮推到底部 */
+    justify-content: space-between;
+    flex: 1;
+    margin-top: 1.5rem;
 }
 
 .game-controls .game-button {
