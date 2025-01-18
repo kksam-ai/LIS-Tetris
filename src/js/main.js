@@ -554,29 +554,79 @@ class GameScreenManager {
 
     // 添加移动端画布初始化方法
     initializeMobileCanvases() {
-        // 计算移动端游戏画布尺寸
-        const screenWidth = Math.min(window.innerWidth, 480);
-        const gameWidth = screenWidth;
-        const gameHeight = gameWidth * 2.2; // 调整比例以显示所有行
+        // 计算游戏区域尺寸
+        const gameArea = this.calculateGameAreaSize();
 
-        this.mobileGameCanvas.width = gameWidth;
-        this.mobileGameCanvas.height = gameHeight;
-        this.mobileGameCanvas.style.width = `${gameWidth}px`;
-        this.mobileGameCanvas.style.height = `${gameHeight}px`;
+        // 设置游戏画布尺寸
+        this.mobileGameCanvas.width = gameArea.width;
+        this.mobileGameCanvas.height = gameArea.height;
+        this.mobileGameCanvas.style.width = `${gameArea.width}px`;
+        this.mobileGameCanvas.style.height = `${gameArea.height}px`;
 
         // 设置背景颜色
-        this.mobileGameCtx.fillStyle = 'var(--color-bg-dark)';
-        this.mobileGameCtx.fillRect(0, 0, gameWidth, gameHeight);
+        this.mobileGameCtx.fillStyle = 'var(--color-canvas-bg)';
+        this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
-        // 设置移动端预览画布
-        this.mobileNextCanvas.width = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH;
-        this.mobileNextCanvas.height = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT;
-        this.mobileNextCanvas.style.width = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH}px`;
-        this.mobileNextCanvas.style.height = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT}px`;
+        // 计算预览画布尺寸
+        const previewSize = Math.min(80, Math.floor(gameArea.width * 0.2));
+        this.mobileNextCanvas.width = previewSize;
+        this.mobileNextCanvas.height = previewSize;
+        this.mobileNextCanvas.style.width = `${previewSize}px`;
+        this.mobileNextCanvas.style.height = `${previewSize}px`;
 
         // 设置预览画布背景颜色
-        this.mobileNextCtx.fillStyle = 'var(--color-bg-dark)';
-        this.mobileNextCtx.fillRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
+        this.mobileNextCtx.fillStyle = 'var(--color-canvas-bg)';
+        this.mobileNextCtx.fillRect(0, 0, previewSize, previewSize);
+
+        // 存储计算出的尺寸供其他方法使用
+        this.mobileConfig = {
+            blockSize: gameArea.blockSize,
+            width: gameArea.width,
+            height: gameArea.height,
+            previewSize
+        };
+    }
+
+    // 计算游戏区域尺寸
+    calculateGameAreaSize() {
+        // 获取游戏区域容器
+        const gameArea = document.querySelector('.mobile-game-area');
+        const isLandscape = window.innerWidth > window.innerHeight;
+
+        // 获取可用空间
+        const availableWidth = gameArea.clientWidth;
+        const availableHeight = gameArea.clientHeight;
+
+        // 计算理想尺寸 (保持10:20的比例)
+        let width, height, blockSize;
+
+        if (isLandscape) {
+            // 横屏模式：以高度为基准
+            height = availableHeight;
+            width = height / 2;
+            if (width > availableWidth) {
+                width = availableWidth;
+                height = width * 2;
+            }
+        } else {
+            // 竖屏模式：以宽度为基准
+            width = availableWidth;
+            height = width * 2;
+            if (height > availableHeight) {
+                height = availableHeight;
+                width = height / 2;
+            }
+        }
+
+        // 计算方块大小
+        blockSize = width / 10;
+
+        // 确保尺寸为整数
+        width = Math.floor(width);
+        height = Math.floor(height);
+        blockSize = Math.floor(blockSize);
+
+        return { width, height, blockSize };
     }
 
     // 添加窗口大小变化处理
@@ -929,22 +979,22 @@ class GameController {
     renderMobileGame() {
         const mobileCtx = this.screenManager.mobileGameCtx;
         const mobileNextCtx = this.screenManager.mobileNextCtx;
-        const width = this.screenManager.mobileGameCanvas.width;
-        const height = this.screenManager.mobileGameCanvas.height;
-        const gridSize = width / 10;
+        const config = this.screenManager.mobileConfig;
+
+        if (!config) return; // 确保配置已初始化
 
         // 清空画布并填充背景色
-        mobileCtx.fillStyle = 'var(--color-bg-dark)';
-        mobileCtx.fillRect(0, 0, width, height);
+        mobileCtx.fillStyle = 'var(--color-canvas-bg)';
+        mobileCtx.fillRect(0, 0, config.width, config.height);
 
-        mobileNextCtx.fillStyle = 'var(--color-bg-dark)';
-        mobileNextCtx.fillRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
+        mobileNextCtx.fillStyle = 'var(--color-canvas-bg)';
+        mobileNextCtx.fillRect(0, 0, config.previewSize, config.previewSize);
 
         // 绘制已固定的方块
         this.board.grid.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value) {
-                    this.drawMobileBlock(mobileCtx, x, y, value, gridSize);
+                    this.drawMobileBlock(mobileCtx, x, y, value, config.blockSize);
                 }
             });
         });
@@ -956,7 +1006,7 @@ class GameController {
                     if (value) {
                         const pieceX = this.board.currentPiece.x + x;
                         const pieceY = this.board.currentPiece.y + y;
-                        this.drawMobileBlock(mobileCtx, pieceX, pieceY, this.board.currentPiece.color, gridSize);
+                        this.drawMobileBlock(mobileCtx, pieceX, pieceY, this.board.currentPiece.color, config.blockSize);
                     }
                 });
             });
@@ -964,38 +1014,46 @@ class GameController {
 
         // 绘制预览方块
         if (this.board.nextPiece) {
-            const previewGridSize = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH / 4;
-            const offsetX = (GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH - this.board.nextPiece.shape[0].length * previewGridSize) / 2;
-            const offsetY = (GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT - this.board.nextPiece.shape.length * previewGridSize) / 2;
+            const previewBlockSize = Math.floor(config.previewSize / 5); // 预览区域容纳5x5的网格
+            const offsetX = (config.previewSize - this.board.nextPiece.shape[0].length * previewBlockSize) / 2;
+            const offsetY = (config.previewSize - this.board.nextPiece.shape.length * previewBlockSize) / 2;
 
             this.board.nextPiece.shape.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value) {
-                        this.drawMobilePreviewBlock(mobileNextCtx, x, y, this.board.nextPiece.color, previewGridSize, offsetX, offsetY);
+                        this.drawMobilePreviewBlock(mobileNextCtx, x, y, this.board.nextPiece.color, previewBlockSize, offsetX, offsetY);
                     }
                 });
             });
         }
     }
 
-    // 添加移动端方块绘制方法
+    // 修改移动端方块绘制方法
     drawMobileBlock(ctx, x, y, color, size) {
+        const xPos = x * size;
+        const yPos = y * size;
+
+        // 绘制方块主体
         ctx.fillStyle = color;
-        ctx.fillRect(x * size, y * size, size - 1, size - 1);
+        ctx.fillRect(xPos, yPos, size - 1, size - 1);
 
         // 添加高光效果
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(x * size, y * size, size - 1, size / 4);
+        ctx.fillRect(xPos, yPos, size - 1, size / 4);
     }
 
-    // 添加移动端预览方块绘制方法
+    // 修改移动端预览方块绘制方法
     drawMobilePreviewBlock(ctx, x, y, color, size, offsetX, offsetY) {
+        const xPos = offsetX + x * size;
+        const yPos = offsetY + y * size;
+
+        // 绘制预览方块
         ctx.fillStyle = color;
-        ctx.fillRect(offsetX + x * size, offsetY + y * size, size - 1, size - 1);
+        ctx.fillRect(xPos, yPos, size - 1, size - 1);
 
         // 添加高光效果
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(offsetX + x * size, offsetY + y * size, size - 1, size / 4);
+        ctx.fillRect(xPos, yPos, size - 1, size / 4);
     }
 }
 
