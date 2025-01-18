@@ -22,71 +22,127 @@
 
     <!-- 游戏界面 -->
     <div id="gameScreen" class="game-screen" style="display: none;">
-        <!-- 顶部区域 -->
-        <div class="game-header">
-            <div class="header-left">
-                <img src="assets/images/logo.svg" alt="游戏Logo" class="game-logo-small">
-                <h1 class="game-title-small">俄罗斯方块</h1>
+        <!-- PC端布局 -->
+        <div class="pc-layout">
+            <!-- 顶部区域 -->
+            <div class="game-header">
+                <div class="header-left">
+                    <img src="assets/images/logo.svg" alt="游戏Logo" class="game-logo-small">
+                    <h1 class="game-title-small">俄罗斯方块</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info-small">
+                        <span id="gameUsername">玩家</span>
+                        <div class="user-avatar-small">
+                            <img id="gameAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="header-right">
-                <div class="user-info-small">
-                    <span id="gameUsername">玩家</span>
-                    <div class="user-avatar-small">
-                        <img id="gameAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+
+            <!-- 分数区域 -->
+            <div class="score-container">
+                <div class="score-item">
+                    <span class="score-label">最高分</span>
+                    <span id="highScore" class="score-value">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">分数</span>
+                    <span id="score" class="score-value">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">等级</span>
+                    <span id="level" class="score-value">1</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">消除行数</span>
+                    <span id="lines" class="score-value">0</span>
+                </div>
+            </div>
+
+            <!-- 游戏主区域 -->
+            <div class="game-area">
+                <!-- 主游戏区 -->
+                <div class="main-area">
+                    <canvas id="gameCanvas"></canvas>
+                </div>
+                <!-- 信息区 -->
+                <div class="info-area">
+                    <!-- 下一个方块预览 -->
+                    <div class="next-piece">
+                        <h3>下一个</h3>
+                        <canvas id="nextCanvas"></canvas>
+                    </div>
+                    <!-- 控制说明 -->
+                    <div class="controls-info">
+                        <h3>操作说明</h3>
+                        <ul>
+                            <li>← → 移动方块</li>
+                            <li>空格 旋转方块</li>
+                            <li>↓ 加速下落</li>
+                            <li>F 直接降落到底部</li>
+                        </ul>
+                    </div>
+                    <!-- 游戏控制 -->
+                    <div class="game-controls">
+                        <button id="pauseGame" class="game-button">暂停</button>
+                        <button id="restartGameBtn" class="game-button">重新开始</button>
+                        <button id="quitGame" class="game-button">退出</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 分数区域 -->
-        <div class="score-container">
-            <div class="score-item">
-                <span class="score-label">最高分</span>
-                <span id="highScore" class="score-value">0</span>
+        <!-- 移动端布局 -->
+        <div class="mobile-layout">
+            <!-- 顶部区域 -->
+            <div class="mobile-header">
+                <div class="mobile-header-row1">
+                    <div class="mobile-user-avatar">
+                        <img id="mobileAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                    </div>
+                    <div class="mobile-game-controls">
+                        <button id="mobilePauseGame" class="game-button">暂停</button>
+                        <button id="mobileRestartGame" class="game-button">重新开始</button>
+                        <button id="mobileQuitGame" class="game-button">退出</button>
+                    </div>
+                </div>
+                <div class="mobile-header-row2">
+                    <div class="mobile-next-piece">
+                        <h3>下一个</h3>
+                        <canvas id="mobileNextCanvas"></canvas>
+                    </div>
+                    <div class="mobile-score-info">
+                        <div class="mobile-score-item">
+                            <span class="score-label">分数</span>
+                            <span id="mobileScore" class="score-value">0</span>
+                        </div>
+                        <div class="mobile-score-item">
+                            <span class="score-label">最高分</span>
+                            <span id="mobileHighScore" class="score-value">0</span>
+                        </div>
+                    </div>
+                    <div class="mobile-level-info">
+                        <div class="mobile-score-item">
+                            <span class="score-label">等级</span>
+                            <span id="mobileLevel" class="score-value">1</span>
+                        </div>
+                        <div class="mobile-score-item">
+                            <span class="score-label">消除行数</span>
+                            <span id="mobileLines" class="score-value">0</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="score-item">
-                <span class="score-label">分数</span>
-                <span id="score" class="score-value">0</span>
-            </div>
-            <div class="score-item">
-                <span class="score-label">等级</span>
-                <span id="level" class="score-value">1</span>
-            </div>
-            <div class="score-item">
-                <span class="score-label">消除行数</span>
-                <span id="lines" class="score-value">0</span>
-            </div>
-        </div>
 
-        <!-- 游戏主区域 -->
-        <div class="game-area">
-            <!-- 主游戏区 -->
-            <div class="main-area">
-                <canvas id="gameCanvas"></canvas>
+            <!-- 中部游戏区域 -->
+            <div class="mobile-game-area">
+                <canvas id="mobileGameCanvas"></canvas>
             </div>
-            <!-- 信息区 -->
-            <div class="info-area">
-                <!-- 下一个方块预览 -->
-                <div class="next-piece">
-                    <h3>下一个</h3>
-                    <canvas id="nextCanvas"></canvas>
-                </div>
-                <!-- 控制说明 -->
-                <div class="controls-info">
-                    <h3>操作说明</h3>
-                    <ul>
-                        <li>← → 移动方块</li>
-                        <li>空格 旋转方块</li>
-                        <li>↓ 加速下落</li>
-                        <li>F 直接降落到底部</li>
-                    </ul>
-                </div>
-                <!-- 游戏控制 -->
-                <div class="game-controls">
-                    <button id="pauseGame" class="game-button">暂停</button>
-                    <button id="restartGameBtn" class="game-button">重新开始</button>
-                    <button id="quitGame" class="game-button">退出</button>
-                </div>
+
+            <!-- 底部控制区域 -->
+            <div class="mobile-controls">
+                <!-- 这里预留给触控按钮，将在047任务中实现 -->
             </div>
         </div>
     </div>

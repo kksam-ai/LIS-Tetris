@@ -16,6 +16,13 @@ const GAME_CONFIG = {
             WIDTH: 135,
             HEIGHT: 135,
             GRID_SIZE: 30
+        },
+        MOBILE: {
+            PREVIEW: {
+                WIDTH: 90,
+                HEIGHT: 90,
+                GRID_SIZE: 30
+            }
         }
     },
     SCORING: {
@@ -483,50 +490,130 @@ class GameScreenManager {
         this.nextCanvas = document.getElementById('nextCanvas');
         this.gameCtx = this.gameCanvas.getContext('2d');
         this.nextCtx = this.nextCanvas.getContext('2d');
+
+        // 添加移动端画布
+        this.mobileGameCanvas = document.getElementById('mobileGameCanvas');
+        this.mobileNextCanvas = document.getElementById('mobileNextCanvas');
+        this.mobileGameCtx = this.mobileGameCanvas.getContext('2d');
+        this.mobileNextCtx = this.mobileNextCanvas.getContext('2d');
+
         this.isPaused = false;
+        this.isMobile = window.innerWidth <= 480;
 
         this.initializeCanvases();
+        this.setupResizeHandler();
     }
 
     // 初始化画布
     initializeCanvases() {
-        // 设置主游戏画布
+        // PC端画布设置
         this.gameCanvas.width = GAME_CONFIG.CANVAS.MAIN.WIDTH;
         this.gameCanvas.height = GAME_CONFIG.CANVAS.MAIN.HEIGHT;
         this.gameCanvas.style.width = `${GAME_CONFIG.CANVAS.MAIN.WIDTH}px`;
         this.gameCanvas.style.height = `${GAME_CONFIG.CANVAS.MAIN.HEIGHT}px`;
 
-        // 设置预览画布
         this.nextCanvas.width = GAME_CONFIG.CANVAS.PREVIEW.WIDTH;
         this.nextCanvas.height = GAME_CONFIG.CANVAS.PREVIEW.HEIGHT;
         this.nextCanvas.style.width = `${GAME_CONFIG.CANVAS.PREVIEW.WIDTH}px`;
         this.nextCanvas.style.height = `${GAME_CONFIG.CANVAS.PREVIEW.HEIGHT}px`;
 
+        // 添加移动端画布设置
+        if (this.isMobile) {
+            this.initializeMobileCanvases();
+        }
+
         // 绘制网格
         this.drawGrid();
+        if (this.isMobile) {
+            this.drawMobileGrid();
+        }
     }
 
-    // 绘制网格
+    // 绘制PC端网格
     drawGrid() {
-        const { WIDTH, HEIGHT, GRID_SIZE } = GAME_CONFIG.CANVAS.MAIN;
+        const width = this.gameCanvas.width;
+        const height = this.gameCanvas.height;
+        const gridSize = GAME_CONFIG.CANVAS.MAIN.GRID_SIZE;
 
         this.gameCtx.strokeStyle = 'var(--grid-border-color)';
         this.gameCtx.lineWidth = 0.5;
 
         // 绘制垂直线
-        for (let x = 0; x <= WIDTH; x += GRID_SIZE) {
+        for (let x = 0; x <= width; x += gridSize) {
             this.gameCtx.beginPath();
             this.gameCtx.moveTo(x, 0);
-            this.gameCtx.lineTo(x, HEIGHT);
+            this.gameCtx.lineTo(x, height);
             this.gameCtx.stroke();
         }
 
         // 绘制水平线
-        for (let y = 0; y <= HEIGHT; y += GRID_SIZE) {
+        for (let y = 0; y <= height; y += gridSize) {
             this.gameCtx.beginPath();
             this.gameCtx.moveTo(0, y);
-            this.gameCtx.lineTo(WIDTH, y);
+            this.gameCtx.lineTo(width, y);
             this.gameCtx.stroke();
+        }
+    }
+
+    // 添加移动端画布初始化方法
+    initializeMobileCanvases() {
+        // 计算移动端游戏画布尺寸
+        const screenWidth = Math.min(window.innerWidth, 480);
+        const gameWidth = screenWidth;
+        const gameHeight = gameWidth * 2; // 保持2:1的比例
+
+        this.mobileGameCanvas.width = gameWidth;
+        this.mobileGameCanvas.height = gameHeight;
+        this.mobileGameCanvas.style.width = `${gameWidth}px`;
+        this.mobileGameCanvas.style.height = `${gameHeight}px`;
+
+        // 设置移动端预览画布
+        this.mobileNextCanvas.width = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH;
+        this.mobileNextCanvas.height = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT;
+        this.mobileNextCanvas.style.width = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH}px`;
+        this.mobileNextCanvas.style.height = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT}px`;
+    }
+
+    // 添加窗口大小变化处理
+    setupResizeHandler() {
+        window.addEventListener('resize', () => {
+            const wasMobile = this.isMobile;
+            this.isMobile = window.innerWidth <= 480;
+
+            // 只有在移动状态改变时才重新初始化画布
+            if (wasMobile !== this.isMobile) {
+                this.initializeCanvases();
+            } else if (this.isMobile) {
+                // 在移动端时，随窗口大小变化调整画布大小
+                this.initializeMobileCanvases();
+                this.drawMobileGrid();
+            }
+        });
+    }
+
+    // 添加移动端网格绘制方法
+    drawMobileGrid() {
+        const width = this.mobileGameCanvas.width;
+        const height = this.mobileGameCanvas.height;
+        const gridSize = width / 10; // 10格宽度
+
+        this.mobileGameCtx.strokeStyle = 'var(--grid-border-color)';
+        this.mobileGameCtx.lineWidth = 0.5;
+
+        // 绘制垂直线
+        for (let x = 0; x <= width; x += gridSize) {
+            this.mobileGameCtx.beginPath();
+            this.mobileGameCtx.moveTo(x, 0);
+            this.mobileGameCtx.lineTo(x, height);
+            this.mobileGameCtx.stroke();
+        }
+
+        // 绘制水平线
+        for (let y = 0; y <= height; y += gridSize) {
+            this.mobileGameCtx.beginPath();
+            this.mobileGameCtx.moveTo(0, y);
+            this.mobileGameCtx.lineTo(width, y);
+            this.mobileGameCtx.stroke();
         }
     }
 
@@ -547,7 +634,6 @@ class GameScreenManager {
     // 切换暂停状态
     togglePause() {
         this.isPaused = !this.isPaused;
-        // TODO: 在后续任务中实现暂停逻辑
     }
 }
 
@@ -569,6 +655,14 @@ class GameController {
         this.renderer = null;
         this.animationId = null;
         this.gameOverModal = document.getElementById('gameOverModal');
+
+        // 添加移动端分数元素
+        this.mobileScoreElements = {
+            score: document.getElementById('mobileScore'),
+            highScore: document.getElementById('mobileHighScore'),
+            level: document.getElementById('mobileLevel'),
+            lines: document.getElementById('mobileLines')
+        };
 
         // 初始化游戏板和渲染器
         this.initializeGame();
@@ -787,10 +881,17 @@ class GameController {
 
     // 更新分数显示
     updateScore() {
+        // 更新PC端分数
         document.getElementById('score').textContent = this.score;
         document.getElementById('level').textContent = this.level;
         document.getElementById('lines').textContent = this.lines;
         document.getElementById('highScore').textContent = this.highScore;
+
+        // 更新移动端分数
+        this.mobileScoreElements.score.textContent = this.score;
+        this.mobileScoreElements.level.textContent = this.level;
+        this.mobileScoreElements.lines.textContent = this.lines;
+        this.mobileScoreElements.highScore.textContent = this.highScore;
     }
 
     // 游戏主循环
@@ -832,10 +933,87 @@ class GameController {
         this.renderer.renderBoard(this.board);
         this.renderer.renderNextPiece(this.board.nextPiece);
 
+        // 添加移动端渲染
+        if (this.screenManager.isMobile) {
+            this.renderMobileGame();
+        }
+
         this.lastTime = time;
         if (this.gameState === GAME_STATES.PLAYING) {
             this.animationId = requestAnimationFrame(this.gameLoop.bind(this));
         }
+    }
+
+    // 添加移动端渲染方法
+    renderMobileGame() {
+        const mobileCtx = this.screenManager.mobileGameCtx;
+        const mobileNextCtx = this.screenManager.mobileNextCtx;
+        const width = this.screenManager.mobileGameCanvas.width;
+        const gridSize = width / 10;
+
+        // 清空画布
+        mobileCtx.clearRect(0, 0, width, width * 2);
+        mobileNextCtx.clearRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
+
+        // 重绘网格
+        this.screenManager.drawMobileGrid();
+
+        // 绘制已固定的方块
+        this.board.grid.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value) {
+                    this.drawMobileBlock(mobileCtx, x, y, value, gridSize);
+                }
+            });
+        });
+
+        // 绘制当前方块
+        if (this.board.currentPiece) {
+            this.board.currentPiece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        const pieceX = this.board.currentPiece.x + x;
+                        const pieceY = this.board.currentPiece.y + y;
+                        this.drawMobileBlock(mobileCtx, pieceX, pieceY, this.board.currentPiece.color, gridSize);
+                    }
+                });
+            });
+        }
+
+        // 绘制预览方块
+        if (this.board.nextPiece) {
+            const previewGridSize = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH / 4;
+            const offsetX = (GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH - this.board.nextPiece.shape[0].length * previewGridSize) / 2;
+            const offsetY = (GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT - this.board.nextPiece.shape.length * previewGridSize) / 2;
+
+            this.board.nextPiece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value) {
+                        this.drawMobilePreviewBlock(mobileNextCtx, x, y, this.board.nextPiece.color, previewGridSize, offsetX, offsetY);
+                    }
+                });
+            });
+        }
+    }
+
+    // 添加移动端方块绘制方法
+    drawMobileBlock(ctx, x, y, color, size) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x * size, y * size, size - 1, size - 1);
+
+        // 添加高光效果
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.fillRect(x * size, y * size, size - 1, size / 4);
+    }
+
+    // 添加移动端预览方块绘制方法
+    drawMobilePreviewBlock(ctx, x, y, color, size, offsetX, offsetY) {
+        ctx.fillStyle = color;
+        ctx.fillRect(offsetX + x * size, offsetY + y * size, size - 1, size - 1);
+
+        // 添加高光效果
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.fillRect(offsetX + x * size, offsetY + y * size, size - 1, size / 4);
     }
 }
 
@@ -1005,5 +1183,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     exitButton.addEventListener('click', () => {
         gameController.exitToMenu();
+    });
+
+    // 添加移动端按钮事件处理
+    const mobilePauseButton = document.getElementById('mobilePauseGame');
+    const mobileRestartButton = document.getElementById('mobileRestartGame');
+    const mobileQuitButton = document.getElementById('mobileQuitGame');
+
+    // 移动端暂停按钮点击事件
+    mobilePauseButton.addEventListener('click', () => {
+        gameController.togglePause();
+        mobilePauseButton.textContent = gameController.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
+        pauseButton.textContent = mobilePauseButton.textContent; // 同步PC端按钮状态
+    });
+
+    // 移动端重新开始按钮点击事件
+    mobileRestartButton.addEventListener('click', () => {
+        // 暂停游戏
+        if (gameController.gameState === GAME_STATES.PLAYING) {
+            gameController.togglePause();
+            mobilePauseButton.textContent = '继续';
+            pauseButton.textContent = '继续';
+        }
+        // 显示重新开始确认弹窗
+        restartConfirmModal.classList.add('show');
+    });
+
+    // 移动端退出按钮点击事件
+    mobileQuitButton.addEventListener('click', () => {
+        // 暂停游戏
+        if (gameController.gameState === GAME_STATES.PLAYING) {
+            gameController.togglePause();
+            mobilePauseButton.textContent = '继续';
+            pauseButton.textContent = '继续';
+        }
+        // 显示退出确认弹窗
+        quitConfirmModal.classList.add('show');
     });
 });
