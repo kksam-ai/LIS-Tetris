@@ -21,6 +21,10 @@
     /* 阴影 */
     --shadow-normal: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-large: 0 8px 12px rgba(0, 0, 0, 0.15);
+
+    --color-secondary: #B5E4D3;
+    --color-accent: #7AC1A6;
+    --color-body-bg: #121212;  /* 添加body背景色变量 */
 }
 
 /* 重置样式 */
@@ -37,6 +41,11 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
     color: var(--color-text);
+    background-color: var(--color-body-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* 游戏容器 */
@@ -1390,7 +1399,6 @@ body {
         gap: 0;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
     }
 
     /* 顶部信息区域 */
@@ -1398,7 +1406,10 @@ body {
         height: var(--header-height);
         width: 100%;
         padding: var(--game-margin);
-        background-color: var(--color-white);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -1424,7 +1435,10 @@ body {
         justify-content: center;
         align-items: center;
         padding: var(--game-margin);
-        background-color: white;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
         overflow: hidden;
     }
 
@@ -1482,7 +1496,10 @@ body {
         height: var(--controls-height);
         width: 100%;
         padding: var(--game-margin);
-        background-color: var(--color-white);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         align-items: center;
     }
