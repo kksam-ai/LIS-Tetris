@@ -1424,7 +1424,7 @@ body {
         justify-content: center;
         align-items: center;
         padding: var(--game-margin);
-        background-color: var(--color-canvas-bg);
+        background-color: white;
         overflow: hidden;
     }
 
