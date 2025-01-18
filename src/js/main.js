@@ -705,6 +705,9 @@ class GameController {
 
         // 绑定键盘事件
         this.bindKeyboardEvents();
+
+        // 初始化触控按钮
+        this.initTouchControls();
     }
 
     // 加载最高分
@@ -1060,6 +1063,112 @@ class GameController {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.fillRect(xPos, yPos, size - 1, size / 4);
     }
+
+    // 移动方块相关方法
+    moveLeft() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.board.movePiece(-1, 0);
+        }
+    }
+
+    moveRight() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.board.movePiece(1, 0);
+        }
+    }
+
+    rotate() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.board.rotatePiece();
+        }
+    }
+
+    startSoftDrop() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.board.movePiece(0, 1);
+        }
+    }
+
+    stopSoftDrop() {
+        // 停止加速下落,不需要特殊处理
+    }
+
+    hardDrop() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            const linesCleared = this.board.hardDrop();
+            this.handleLineClear(linesCleared);
+            if (!this.board.update()) {
+                this.gameOver();
+                return;
+            }
+        }
+    }
+
+    // 初始化触控按钮
+    initTouchControls() {
+        const touchButtons = {
+            moveLeft: document.getElementById('moveLeft'),
+            hardDrop: document.getElementById('hardDrop'),
+            rotate: document.getElementById('rotate'),
+            softDrop: document.getElementById('softDrop'),
+            moveRight: document.getElementById('moveRight')
+        };
+
+        // 防止触摸事件引起页面滚动
+        Object.values(touchButtons).forEach(button => {
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+            });
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+            });
+        });
+
+        // 绑定触摸和鼠标事件
+        touchButtons.moveLeft.addEventListener('touchstart', () => {
+            this.moveLeft();
+        });
+        touchButtons.moveLeft.addEventListener('mousedown', () => {
+            this.moveLeft();
+        });
+
+        touchButtons.moveRight.addEventListener('touchstart', () => {
+            this.moveRight();
+        });
+        touchButtons.moveRight.addEventListener('mousedown', () => {
+            this.moveRight();
+        });
+
+        touchButtons.rotate.addEventListener('touchstart', () => {
+            this.rotate();
+        });
+        touchButtons.rotate.addEventListener('mousedown', () => {
+            this.rotate();
+        });
+
+        touchButtons.softDrop.addEventListener('touchstart', () => {
+            this.startSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('touchend', () => {
+            this.stopSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('mousedown', () => {
+            this.startSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('mouseup', () => {
+            this.stopSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('mouseleave', () => {
+            this.stopSoftDrop();
+        });
+
+        touchButtons.hardDrop.addEventListener('touchstart', () => {
+            this.hardDrop();
+        });
+        touchButtons.hardDrop.addEventListener('mousedown', () => {
+            this.hardDrop();
+        });
+    }
 }
 
 // 等待DOM完全加载
@@ -1264,54 +1373,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // 显示退出确认弹窗
         quitConfirmModal.classList.add('show');
-    });
-
-    // 触控按钮事件处理
-    function initTouchControls() {
-        const touchButtons = {
-            moveLeft: document.getElementById('moveLeft'),
-            hardDrop: document.getElementById('hardDrop'),
-            rotate: document.getElementById('rotate'),
-            softDrop: document.getElementById('softDrop'),
-            moveRight: document.getElementById('moveRight')
-        };
-
-        // 防止触摸事件引起页面滚动
-        Object.values(touchButtons).forEach(button => {
-            button.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-            });
-        });
-
-        // 绑定触摸事件
-        touchButtons.moveLeft.addEventListener('touchstart', () => {
-            gameController.moveLeft();
-        });
-
-        touchButtons.moveRight.addEventListener('touchstart', () => {
-            gameController.moveRight();
-        });
-
-        touchButtons.rotate.addEventListener('touchstart', () => {
-            gameController.rotate();
-        });
-
-        touchButtons.softDrop.addEventListener('touchstart', () => {
-            gameController.startSoftDrop();
-        });
-
-        touchButtons.softDrop.addEventListener('touchend', () => {
-            gameController.stopSoftDrop();
-        });
-
-        touchButtons.hardDrop.addEventListener('touchstart', () => {
-            gameController.hardDrop();
-        });
-    }
-
-    // 在游戏初始化时调用
-    window.addEventListener('load', () => {
-        initTouchControls();
-        // ... existing code ...
     });
 });
