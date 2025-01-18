@@ -1009,7 +1009,8 @@ class GameController {
 
         // 绘制当前方块
         if (this.board.currentPiece) {
-            this.board.currentPiece.shape.forEach((row, y) => {
+            const shape = this.board.currentPiece.getCurrentShape(); // 使用getCurrentShape获取旋转后的形状
+            shape.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value) {
                         const pieceX = this.board.currentPiece.x + x;
@@ -1026,7 +1027,8 @@ class GameController {
             const offsetX = (config.previewSize - this.board.nextPiece.shape[0].length * previewBlockSize) / 2;
             const offsetY = (config.previewSize - this.board.nextPiece.shape.length * previewBlockSize) / 2;
 
-            this.board.nextPiece.shape.forEach((row, y) => {
+            const nextShape = this.board.nextPiece.getCurrentShape(); // 使用getCurrentShape获取旋转后的形状
+            nextShape.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value) {
                         this.drawMobilePreviewBlock(mobileNextCtx, x, y, this.board.nextPiece.color, previewBlockSize, offsetX, offsetY);
@@ -1078,8 +1080,15 @@ class GameController {
     }
 
     rotate() {
+        console.log('Rotate called, game state:', this.gameState);
         if (this.gameState === GAME_STATES.PLAYING) {
-            this.board.rotatePiece();
+            console.log('Attempting to rotate piece');
+            if (this.board && this.board.currentPiece) {
+                this.board.rotatePiece();
+                console.log('Piece rotated');
+            } else {
+                console.log('No current piece to rotate');
+            }
         }
     }
 
@@ -1140,9 +1149,11 @@ class GameController {
         });
 
         touchButtons.rotate.addEventListener('touchstart', () => {
+            console.log('Rotate button touched');
             this.rotate();
         });
         touchButtons.rotate.addEventListener('mousedown', () => {
+            console.log('Rotate button clicked');
             this.rotate();
         });
 

@@ -101,12 +101,16 @@ class Tetromino {
     // 矩阵旋转
     rotateMatrix(matrix, rotation) {
         const N = matrix.length;
-        let rotated = matrix;
+        // 深拷贝原始矩阵
+        let rotated = Array.from({ length: N }, (_, i) =>
+            Array.from({ length: N }, (_, j) => matrix[i][j])
+        );
 
         for (let i = 0; i < rotation % 4; i++) {
-            rotated = Array.from({ length: N }, (_, i) =>
+            const temp = Array.from({ length: N }, (_, i) =>
                 Array.from({ length: N }, (_, j) => rotated[N - j - 1][i])
             );
+            rotated = temp;
         }
 
         return rotated;
@@ -139,6 +143,14 @@ class GameBoard {
 
     // 检查碰撞
     checkCollision(piece, offsetX = 0, offsetY = 0, rotation = 0) {
+        console.log('Checking collision for:', {
+            pieceType: piece.type,
+            currentRotation: piece.rotation,
+            newRotation: (piece.rotation + rotation) % 4,
+            offsetX,
+            offsetY
+        });
+
         const shape = piece.rotateMatrix(piece.shape, (piece.rotation + rotation) % 4);
 
         for (let y = 0; y < shape.length; y++) {
@@ -150,11 +162,13 @@ class GameBoard {
                     if (newX < 0 || newX >= this.width ||
                         newY >= this.height ||
                         (newY >= 0 && this.grid[newY][newX] !== null)) {
+                        console.log('Collision detected at:', { x: newX, y: newY });
                         return true;
                     }
                 }
             }
         }
+        console.log('No collision detected');
         return false;
     }
 
@@ -205,10 +219,13 @@ class GameBoard {
 
     // 旋转方块
     rotatePiece() {
+        console.log('Attempting to rotate piece in GameBoard');
         if (!this.checkCollision(this.currentPiece, 0, 0, 1)) {
             this.currentPiece.rotation = (this.currentPiece.rotation + 1) % 4;
+            console.log('Piece rotated successfully');
             return true;
         }
+        console.log('Rotation blocked by collision');
         return false;
     }
 
