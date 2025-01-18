@@ -1,0 +1,46 @@
+.touch-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2vmin;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  display: none; /* 默认隐藏 */
+}
+
+/* 在移动端且游戏主界面显示时才显示触控按钮 */
+@media (max-width: 768px) {
+  .mobile-layout .touch-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.touch-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15vmin;
+  height: 15vmin;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.touch-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
+}
+
+.touch-btn svg {
+  width: 50%;
+  height: 50%;
+  fill: rgba(255, 255, 255, 0.8);
+}
+
+.touch-btn:active svg {
+  fill: rgba(255, 255, 255, 1);
+}

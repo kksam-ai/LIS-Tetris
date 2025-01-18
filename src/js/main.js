@@ -1265,4 +1265,53 @@ document.addEventListener('DOMContentLoaded', () => {
         // 显示退出确认弹窗
         quitConfirmModal.classList.add('show');
     });
+
+    // 触控按钮事件处理
+    function initTouchControls() {
+        const touchButtons = {
+            moveLeft: document.getElementById('moveLeft'),
+            hardDrop: document.getElementById('hardDrop'),
+            rotate: document.getElementById('rotate'),
+            softDrop: document.getElementById('softDrop'),
+            moveRight: document.getElementById('moveRight')
+        };
+
+        // 防止触摸事件引起页面滚动
+        Object.values(touchButtons).forEach(button => {
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+            });
+        });
+
+        // 绑定触摸事件
+        touchButtons.moveLeft.addEventListener('touchstart', () => {
+            gameController.moveLeft();
+        });
+
+        touchButtons.moveRight.addEventListener('touchstart', () => {
+            gameController.moveRight();
+        });
+
+        touchButtons.rotate.addEventListener('touchstart', () => {
+            gameController.rotate();
+        });
+
+        touchButtons.softDrop.addEventListener('touchstart', () => {
+            gameController.startSoftDrop();
+        });
+
+        touchButtons.softDrop.addEventListener('touchend', () => {
+            gameController.stopSoftDrop();
+        });
+
+        touchButtons.hardDrop.addEventListener('touchstart', () => {
+            gameController.hardDrop();
+        });
+    }
+
+    // 在游戏初始化时调用
+    window.addEventListener('load', () => {
+        initTouchControls();
+        // ... existing code ...
+    });
 });
