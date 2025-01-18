@@ -563,8 +563,12 @@ class GameScreenManager {
         this.mobileGameCanvas.style.width = `${gameArea.width}px`;
         this.mobileGameCanvas.style.height = `${gameArea.height}px`;
 
+        // 获取计算后的背景色
+        const canvasBgColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--color-canvas-bg').trim();
+
         // 设置背景颜色
-        this.mobileGameCtx.fillStyle = 'var(--color-canvas-bg)';
+        this.mobileGameCtx.fillStyle = canvasBgColor;
         this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
         // 计算预览画布尺寸
@@ -575,7 +579,7 @@ class GameScreenManager {
         this.mobileNextCanvas.style.height = `${previewSize}px`;
 
         // 设置预览画布背景颜色
-        this.mobileNextCtx.fillStyle = 'var(--color-canvas-bg)';
+        this.mobileNextCtx.fillStyle = canvasBgColor;
         this.mobileNextCtx.fillRect(0, 0, previewSize, previewSize);
 
         // 存储计算出的尺寸供其他方法使用
@@ -583,7 +587,8 @@ class GameScreenManager {
             blockSize: gameArea.blockSize,
             width: gameArea.width,
             height: gameArea.height,
-            previewSize
+            previewSize,
+            canvasBgColor  // 保存背景色以供其他方法使用
         };
     }
 
@@ -984,10 +989,10 @@ class GameController {
         if (!config) return; // 确保配置已初始化
 
         // 清空画布并填充背景色
-        mobileCtx.fillStyle = 'var(--color-canvas-bg)';
+        mobileCtx.fillStyle = config.canvasBgColor;
         mobileCtx.fillRect(0, 0, config.width, config.height);
 
-        mobileNextCtx.fillStyle = 'var(--color-canvas-bg)';
+        mobileNextCtx.fillStyle = config.canvasBgColor;
         mobileNextCtx.fillRect(0, 0, config.previewSize, config.previewSize);
 
         // 绘制已固定的方块
