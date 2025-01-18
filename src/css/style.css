@@ -489,6 +489,59 @@ body {
     .radio-label {
         font-size: 1rem;
     }
+
+    /* 隐藏按键设置相关内容 */
+    .key-settings-section {
+        display: none;
+    }
+
+    /* 调整个人信息设置为垂直布局 */
+    .personal-info-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .avatar-section {
+        margin-bottom: 0.5rem;
+    }
+
+    .username-section {
+        width: 100%;
+        margin-top: 0;
+    }
+
+    .input-group {
+        align-items: center;
+    }
+
+    .input-group input {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* 玩家信息显示 */
+    .player-avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .player-name {
+        font-size: 1rem;
+    }
+}
+
+/* 添加移动端特定的样式 */
+@media (max-width: 480px) {
+    .player-avatar {
+        width: 60px;
+        height: 60px;
+    }
+
+    .player-name {
+        font-size: 1rem;
+    }
 }
 
 /* 游戏界面 */
