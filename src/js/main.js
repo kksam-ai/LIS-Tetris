@@ -522,11 +522,8 @@ class GameScreenManager {
             this.initializeMobileCanvases();
         }
 
-        // 绘制网格
+        // 绘制PC端网格
         this.drawGrid();
-        if (this.isMobile) {
-            this.drawMobileGrid();
-        }
     }
 
     // 绘制PC端网格
@@ -560,18 +557,26 @@ class GameScreenManager {
         // 计算移动端游戏画布尺寸
         const screenWidth = Math.min(window.innerWidth, 480);
         const gameWidth = screenWidth;
-        const gameHeight = gameWidth * 2; // 保持2:1的比例
+        const gameHeight = gameWidth * 2.2; // 调整比例以显示所有行
 
         this.mobileGameCanvas.width = gameWidth;
         this.mobileGameCanvas.height = gameHeight;
         this.mobileGameCanvas.style.width = `${gameWidth}px`;
         this.mobileGameCanvas.style.height = `${gameHeight}px`;
 
+        // 设置背景颜色
+        this.mobileGameCtx.fillStyle = 'var(--color-bg-dark)';
+        this.mobileGameCtx.fillRect(0, 0, gameWidth, gameHeight);
+
         // 设置移动端预览画布
         this.mobileNextCanvas.width = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH;
         this.mobileNextCanvas.height = GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT;
         this.mobileNextCanvas.style.width = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH}px`;
         this.mobileNextCanvas.style.height = `${GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT}px`;
+
+        // 设置预览画布背景颜色
+        this.mobileNextCtx.fillStyle = 'var(--color-bg-dark)';
+        this.mobileNextCtx.fillRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
     }
 
     // 添加窗口大小变化处理
@@ -586,35 +591,8 @@ class GameScreenManager {
             } else if (this.isMobile) {
                 // 在移动端时，随窗口大小变化调整画布大小
                 this.initializeMobileCanvases();
-                this.drawMobileGrid();
             }
         });
-    }
-
-    // 添加移动端网格绘制方法
-    drawMobileGrid() {
-        const width = this.mobileGameCanvas.width;
-        const height = this.mobileGameCanvas.height;
-        const gridSize = width / 10; // 10格宽度
-
-        this.mobileGameCtx.strokeStyle = 'var(--grid-border-color)';
-        this.mobileGameCtx.lineWidth = 0.5;
-
-        // 绘制垂直线
-        for (let x = 0; x <= width; x += gridSize) {
-            this.mobileGameCtx.beginPath();
-            this.mobileGameCtx.moveTo(x, 0);
-            this.mobileGameCtx.lineTo(x, height);
-            this.mobileGameCtx.stroke();
-        }
-
-        // 绘制水平线
-        for (let y = 0; y <= height; y += gridSize) {
-            this.mobileGameCtx.beginPath();
-            this.mobileGameCtx.moveTo(0, y);
-            this.mobileGameCtx.lineTo(width, y);
-            this.mobileGameCtx.stroke();
-        }
     }
 
     // 显示游戏界面
@@ -622,6 +600,9 @@ class GameScreenManager {
         this.startScreen.style.display = 'none';
         this.gameScreen.style.display = 'flex';
         this.isPaused = false;
+
+        // 重新初始化画布
+        this.initializeCanvases();
     }
 
     // 返回开始界面
@@ -944,19 +925,20 @@ class GameController {
         }
     }
 
-    // 添加移动端渲染方法
+    // 修改移动端渲染方法
     renderMobileGame() {
         const mobileCtx = this.screenManager.mobileGameCtx;
         const mobileNextCtx = this.screenManager.mobileNextCtx;
         const width = this.screenManager.mobileGameCanvas.width;
+        const height = this.screenManager.mobileGameCanvas.height;
         const gridSize = width / 10;
 
-        // 清空画布
-        mobileCtx.clearRect(0, 0, width, width * 2);
-        mobileNextCtx.clearRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
+        // 清空画布并填充背景色
+        mobileCtx.fillStyle = 'var(--color-bg-dark)';
+        mobileCtx.fillRect(0, 0, width, height);
 
-        // 重绘网格
-        this.screenManager.drawMobileGrid();
+        mobileNextCtx.fillStyle = 'var(--color-bg-dark)';
+        mobileNextCtx.fillRect(0, 0, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.WIDTH, GAME_CONFIG.CANVAS.MOBILE.PREVIEW.HEIGHT);
 
         // 绘制已固定的方块
         this.board.grid.forEach((row, y) => {
