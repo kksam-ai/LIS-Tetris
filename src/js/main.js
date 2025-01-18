@@ -66,6 +66,7 @@ class SettingsManager {
             if (this.settings.avatar) {
                 document.getElementById('avatarPreview').src = this.settings.avatar;
                 document.getElementById('gameAvatarPreview').src = this.settings.avatar;
+                document.getElementById('mobileAvatarPreview').src = this.settings.avatar;
             }
             // 加载用户名
             if (this.settings.username) {
@@ -86,13 +87,16 @@ class SettingsManager {
     // 更新游戏界面的个人信息
     updateGameInfo() {
         const gameAvatar = document.getElementById('gameAvatarPreview');
+        const mobileAvatar = document.getElementById('mobileAvatarPreview');
         const gameUsername = document.getElementById('gameUsername');
 
         // 更新头像
         if (this.settings.avatar) {
             gameAvatar.src = this.settings.avatar;
+            mobileAvatar.src = this.settings.avatar;
         } else {
             gameAvatar.src = 'assets/images/default-avatar.svg';
+            mobileAvatar.src = 'assets/images/default-avatar.svg';
         }
 
         // 更新用户名
