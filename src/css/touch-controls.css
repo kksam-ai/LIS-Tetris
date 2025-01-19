@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 2vmin;
-  margin-top: auto; /* 将控制区推到底部 */
 }
 
 /* 在移动端且游戏主界面显示时才显示触控按钮 */
@@ -68,14 +67,4 @@
 
 .touch-btn:active svg {
   fill: rgba(255, 255, 255, 1);
-}
-
-/* 第二行按钮样式调整 */
-.touch-controls-row:last-child .game-button {
-  min-width: 12vmin;
-  width: auto;
-  height: 1.5rem;
-  border-radius: 0.75rem;
-  font-size: 0.85rem;
-  padding: 0 3vmin;
 }
