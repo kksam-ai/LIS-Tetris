@@ -575,8 +575,8 @@ class GameScreenManager {
         this.mobileGameCtx.fillStyle = '#FFFFFF';
         this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
-        // 计算预览画布尺寸
-        const previewSize = Math.min(80, Math.floor(gameArea.width * 0.2));
+        // 设置预览画布尺寸为固定的72px
+        const previewSize = 72;
         this.mobileNextCanvas.width = previewSize;
         this.mobileNextCanvas.height = previewSize;
         this.mobileNextCanvas.style.width = `${previewSize}px`;
@@ -584,7 +584,6 @@ class GameScreenManager {
 
         // 设置预览画布背景颜色
         this.mobileNextCtx.fillStyle = '#FFFFFF';
-        this.mobileNextCtx.fillRect(0, 0, previewSize, previewSize);
 
         // 存储计算出的尺寸供其他方法使用
         this.mobileConfig = {
