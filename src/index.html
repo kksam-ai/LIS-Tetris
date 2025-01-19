@@ -98,16 +98,6 @@
         <div class="mobile-layout">
             <!-- 顶部区域 -->
             <div class="mobile-header">
-                <div class="mobile-header-row1">
-                    <div class="mobile-user-avatar">
-                        <img id="mobileAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
-                    </div>
-                    <div class="mobile-game-controls">
-                        <button id="mobilePauseGame" class="game-button">暂停</button>
-                        <button id="mobileRestartGame" class="game-button">重来</button>
-                        <button id="mobileQuitGame" class="game-button">退出</button>
-                    </div>
-                </div>
                 <div class="mobile-header-row2">
                     <div class="mobile-next-piece">
                         <canvas id="mobileNextCanvas"></canvas>
@@ -131,6 +121,9 @@
                             <span id="mobileLines" class="score-value">0</span>
                         </div>
                     </div>
+                    <div class="mobile-user-avatar">
+                        <img id="mobileAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
+                    </div>
                 </div>
             </div>
 
@@ -141,32 +134,41 @@
 
             <!-- 底部控制区域 -->
             <div class="touch-controls">
-                <button class="touch-btn" id="moveLeft">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M15 4L7 12L15 20" stroke="white" stroke-width="2" fill="none"/>
-                    </svg>
-                </button>
-                <button class="touch-btn" id="hardDrop">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 4L12 16M12 16L6 10M12 16L18 10" stroke="white" stroke-width="2" fill="none"/>
-                    </svg>
-                </button>
-                <button class="touch-btn" id="rotate">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4" stroke="white" stroke-width="2" fill="none"/>
-                        <path d="M12 8L8 4L12 0" stroke="white" stroke-width="2" fill="none" transform="translate(0, 4)"/>
-                    </svg>
-                </button>
-                <button class="touch-btn" id="softDrop">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="white" stroke-width="2" fill="none"/>
-                    </svg>
-                </button>
-                <button class="touch-btn" id="moveRight">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M9 4L17 12L9 20" stroke="white" stroke-width="2" fill="none"/>
-                    </svg>
-                </button>
+                <!-- 第一行：游戏操作按钮 -->
+                <div class="touch-controls-row">
+                    <button class="touch-btn" id="moveLeft">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15 4L7 12L15 20" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                    <button class="touch-btn" id="rotate">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4" stroke="white" stroke-width="2" fill="none"/>
+                            <path d="M12 8L8 4L12 0" stroke="white" stroke-width="2" fill="none" transform="translate(0, 4)"/>
+                        </svg>
+                    </button>
+                    <button class="touch-btn" id="softDrop">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                    <button class="touch-btn" id="moveRight">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 4L17 12L9 20" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- 第二行：功能按钮 -->
+                <div class="touch-controls-row">
+                    <button class="game-button" id="mobileRestartGame">重来</button>
+                    <button class="game-button" id="mobilePauseGame">暂停</button>
+                    <button class="touch-btn" id="hardDrop">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4L12 16M12 16L6 10M12 16L18 10" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                    <button class="game-button" id="mobileQuitGame">退出</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,7 +1,9 @@
 .touch-controls {
   padding: 2vmin 2vmin 6vmin 2vmin;
   backdrop-filter: blur(5px);
-  display: none; /* 默认隐藏 */
+  display: flex;
+  flex-direction: column;
+  gap: 2vmin;
   margin-top: auto; /* 将控制区推到底部 */
 }
 
@@ -28,10 +30,17 @@
 
   .mobile-layout .touch-controls {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
     flex-shrink: 0; /* 防止控制区被压缩 */
   }
+}
+
+/* 控制按钮行样式 */
+.touch-controls-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2vmin;
+  width: 100%;
 }
 
 .touch-btn {
@@ -59,4 +68,14 @@
 
 .touch-btn:active svg {
   fill: rgba(255, 255, 255, 1);
+}
+
+/* 第二行按钮样式调整 */
+.touch-controls-row:last-child .game-button {
+  min-width: 12vmin;
+  width: auto;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0 3vmin;
 }
