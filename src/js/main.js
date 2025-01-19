@@ -598,42 +598,33 @@ class GameScreenManager {
 
     // 计算游戏区域尺寸
     calculateGameAreaSize() {
-        // 获取游戏区域容器
+        // 获取浏览器可视区域高度
+        const viewportHeight = window.innerHeight;
+
+        // 固定顶部高度
+        const headerHeight = 110;
+
+        // 计算底部高度（在160-180px之间）
+        const footerHeight = Math.min(180, Math.max(160, viewportHeight * 0.2));
+
+        // 计算主游戏区可用高度
+        const availableHeight = viewportHeight - headerHeight - footerHeight;
+
+        // 获取游戏区域容器宽度
         const gameArea = document.querySelector('.mobile-game-area');
-        const isLandscape = window.innerWidth > window.innerHeight;
-
-        // 获取可用空间
         const availableWidth = gameArea.clientWidth;
-        const availableHeight = gameArea.clientHeight;
 
-        // 计算理想尺寸 (保持10:20的比例)
-        let width, height, blockSize;
+        // 计算方块大小（基于高度和宽度中的较小值）
+        const blockSizeFromHeight = Math.floor(availableHeight / 20);
+        const blockSizeFromWidth = Math.floor(availableWidth / 10);
+        let blockSize = Math.min(blockSizeFromHeight, blockSizeFromWidth);
 
-        if (isLandscape) {
-            // 横屏模式：以高度为基准
-            height = availableHeight;
-            width = height / 2;
-            if (width > availableWidth) {
-                width = availableWidth;
-                height = width * 2;
-            }
-        } else {
-            // 竖屏模式：以宽度为基准
-            width = availableWidth;
-            height = width * 2;
-            if (height > availableHeight) {
-                height = availableHeight;
-                width = height / 2;
-            }
-        }
+        // 确保方块大小合适
+        blockSize = Math.max(15, Math.min(blockSize, 30));
 
-        // 计算方块大小
-        blockSize = width / 10;
-
-        // 确保尺寸为整数
-        width = Math.floor(width);
-        height = Math.floor(height);
-        blockSize = Math.floor(blockSize);
+        // 基于方块大小计算最终的画布尺寸
+        const width = blockSize * 10;
+        const height = blockSize * 20;
 
         return { width, height, blockSize };
     }
@@ -1050,11 +1041,15 @@ class GameController {
 
         // 绘制方块主体
         ctx.fillStyle = color;
-        ctx.fillRect(xPos, yPos, size - 1, size - 1);
+        ctx.fillRect(xPos, yPos, size, size);
 
         // 添加高光效果
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(xPos, yPos, size - 1, size / 4);
+        ctx.fillRect(xPos, yPos, size, size / 4);
+
+        // 添加边框
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeRect(xPos, yPos, size, size);
     }
 
     // 修改移动端预览方块绘制方法
@@ -1064,11 +1059,15 @@ class GameController {
 
         // 绘制预览方块
         ctx.fillStyle = color;
-        ctx.fillRect(xPos, yPos, size - 1, size - 1);
+        ctx.fillRect(xPos, yPos, size, size);
 
         // 添加高光效果
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(xPos, yPos, size - 1, size / 4);
+        ctx.fillRect(xPos, yPos, size, size / 4);
+
+        // 添加边框
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeRect(xPos, yPos, size, size);
     }
 
     // 移动方块相关方法
