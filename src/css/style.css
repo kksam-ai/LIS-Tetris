@@ -1279,13 +1279,13 @@ body {
 
     .mobile-next-piece {
         flex-shrink: 0;
-        width: 72px;
-        height: 72px;
+        width: 60px;
+        height: 60px;
     }
 
     #mobileNextCanvas {
-        width: 72px !important;
-        height: 72px !important;
+        width: 60px !important;
+        height: 60px !important;
     }
 
     .mobile-score-info {
@@ -1362,7 +1362,7 @@ body {
         flex-shrink: 0;
         display: flex;
         align-items: center;
-        padding: 0.5rem 1rem 0;
+        padding: 10px 1rem;
         gap: 1rem;
         background-color: rgba(255, 255, 255, 0.1);
     }
@@ -1383,7 +1383,7 @@ body {
         height: auto; /* 自适应高度 */
         min-height: 160px;
         max-height: 180px;
-        padding: 0 2vmin 6vmin 2vmin !important;
+        padding: 1rem 2vmin 6vmin 2vmin !important;
         backdrop-filter: blur(5px);
         display: flex;
         flex-direction: column;

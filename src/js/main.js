@@ -576,7 +576,7 @@ class GameScreenManager {
         this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
         // 设置预览画布尺寸为固定的72px
-        const previewSize = 72;
+        const previewSize = 60;
         this.mobileNextCanvas.width = previewSize;
         this.mobileNextCanvas.height = previewSize;
         this.mobileNextCanvas.style.width = `${previewSize}px`;
@@ -597,35 +597,27 @@ class GameScreenManager {
 
     // 计算游戏区域尺寸
     calculateGameAreaSize() {
-        // 获取浏览器可视区域高度
-        const viewportHeight = window.innerHeight;
-
-        // 固定顶部高度
-        const headerHeight = 110;
-
-        // 计算底部高度（在160-180px之间）
-        const footerHeight = Math.min(180, Math.max(160, viewportHeight * 0.2));
-
-        // 计算主游戏区可用高度
-        const availableHeight = viewportHeight - headerHeight - footerHeight;
-
-        // 获取游戏区域容器宽度
+        // 获取游戏区域容器尺寸
         const gameArea = document.querySelector('.mobile-game-area');
-        const availableWidth = gameArea.clientWidth;
+        const containerWidth = gameArea.clientWidth;
+        const containerHeight = gameArea.clientHeight;
 
-        // 计算方块大小（基于高度和宽度中的较小值）
-        const blockSizeFromHeight = Math.floor(availableHeight / 20);
-        const blockSizeFromWidth = Math.floor(availableWidth / 10);
-        let blockSize = Math.min(blockSizeFromHeight, blockSizeFromWidth);
+        // 分别计算基于宽度和高度的方块大小
+        const blockSizeFromWidth = containerWidth / 10;  // 保留小数
+        const blockSizeFromHeight = containerHeight / 20;  // 保留小数
 
-        // 确保方块大小合适
-        blockSize = Math.max(15, Math.min(blockSize, 30));
+        // 取较小值并向下取整，确保不会超出容器
+        const blockSize = Math.floor(Math.min(blockSizeFromWidth, blockSizeFromHeight));
 
-        // 基于方块大小计算最终的画布尺寸
+        // 使用整数方块大小计算最终画布尺寸
         const width = blockSize * 10;
         const height = blockSize * 20;
 
-        return { width, height, blockSize };
+        return {
+            width,
+            height,
+            blockSize
+        };
     }
 
     // 添加窗口大小变化处理
