@@ -24,7 +24,6 @@
 
     --color-secondary: #B5E4D3;
     --color-accent: #7AC1A6;
-    --color-body-bg: #121212;  /* 添加body背景色变量 */
 }
 
 /* 重置样式 */
@@ -51,7 +50,7 @@ body {
 /* 游戏容器 */
 .game-container {
     max-width: 1200px;
-    min-width: 300px;
+    min-width: 400px;
     margin: 0 auto;
     padding: 2rem;
 }
@@ -69,7 +68,7 @@ body {
 .button-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2.5rem;
     align-items: center;
     margin-top: 10rem;
 }
@@ -154,8 +153,61 @@ body {
 
 /* 响应式设计 */
 @media (max-width: 480px) {
+    /* 重置游戏容器最小宽度 */
     .game-container {
-        padding: 1.5rem;
+        min-width: auto;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    /* 初始界面按钮样式 */
+    .button-container .game-button {
+        max-width: 280px;
+        min-height: 56px;
+        font-size: 1.2rem;
+        margin: 0.8rem auto;
+        border-radius: 25px;
+        padding: 0.8rem 2rem;
+    }
+
+    /* 设置界面保存按钮 */
+    #saveSettings {
+        max-width: 280px;
+        min-height: 56px;
+        font-size: 1.2rem;
+        margin: 1rem auto;
+        border-radius: 25px;
+        padding: 0.8rem 2rem;
+    }
+
+    /* Modal中的按钮样式 */
+    .modal-content .game-over-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem !important;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        justify-content: center;
+    }
+
+    .game-over-buttons .game-button,
+    .modal-content .game-button {
+        max-width: 280px;
+        min-height: 56px;
+        font-size: 1.2rem;
+        margin: 0 auto;
+        border-radius: 25px;
+        padding: 0.8rem 2rem;
+    }
+
+    /* 退出确认按钮 */
+    .modal-content .quit-confirm-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem !important;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        justify-content: center;
     }
 
     .game-title {
@@ -590,6 +642,7 @@ body {
 
 .game-title-small {
     font-size: 1.5rem;
+    font-weight: 300;
     color: var(--color-text);
     margin: 0;
 }
@@ -621,7 +674,6 @@ body {
 
 #gameUsername {
     font-size: 1rem;
-    font-weight: bold;
     color: var(--color-text);
 }
 
@@ -962,6 +1014,7 @@ body {
 /* Logo样式 */
 .logo-container {
     text-align: center;
+    margin-top: 4rem;
     margin-bottom: 2rem;
 }
 
@@ -980,6 +1033,7 @@ body {
 .logo-container h1 {
     color: var(--color-text);
     font-size: 2rem;
+    font-weight: 300;
     margin: 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -992,12 +1046,6 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 2rem;
-}
-
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
 }
 
 /* 头像设置 */
@@ -1421,7 +1469,7 @@ body {
         min-width: 44px;
         padding: 0;
         font-size: 0.9rem;
-        border-radius: 8px;
+        border-radius: 25px;
         background-color: var(--color-primary);
         color: var(--color-white);
         border: none;
@@ -1436,9 +1484,8 @@ body {
     }
 
     /* 模态框调整 */
-    .modal-content {
+    .modal .modal-content {
         width: 95%;
-        padding: 1rem;
     }
 
     .modal-header h2 {
