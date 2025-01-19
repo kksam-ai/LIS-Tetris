@@ -686,6 +686,10 @@ class GameController {
             lines: document.getElementById('mobileLines')
         };
 
+        // 添加暂停按钮引用
+        this.pauseButton = document.getElementById('pauseGame');
+        this.mobilePauseButton = document.getElementById('mobilePauseGame');
+
         // 初始化游戏板和渲染器
         this.initializeGame();
 
@@ -762,6 +766,7 @@ class GameController {
             GAME_CONFIG.CANVAS.MAIN.HEIGHT / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE
         );
         this.updateScore();
+        this.updatePauseButtonsState(); // 添加按钮状态更新
 
         // 初始化第一个方块
         this.board.update();
@@ -778,9 +783,9 @@ class GameController {
         } else if (this.gameState === GAME_STATES.PAUSED) {
             console.log('Game resumed');
             this.gameState = GAME_STATES.PLAYING;
-            // 不重置lastTime，保持当前时间
             this.gameLoop(performance.now());
         }
+        this.updatePauseButtonsState(); // 添加按钮状态更新
     }
 
     // 游戏结束
@@ -827,6 +832,7 @@ class GameController {
 
         // 开始新游戏
         this.startGame();
+        this.updatePauseButtonsState(); // 添加按钮状态更新
     }
 
     // 退出到主菜单
@@ -840,6 +846,7 @@ class GameController {
         // 重置游戏状态
         this.gameState = GAME_STATES.IDLE;
         cancelAnimationFrame(this.animationId);
+        this.updatePauseButtonsState(); // 添加按钮状态更新
     }
 
     // 生成下一个方块
@@ -1175,6 +1182,17 @@ class GameController {
             this.hardDrop();
         });
     }
+
+    // 添加统一的按钮状态更新方法
+    updatePauseButtonsState() {
+        const buttonText = this.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
+        if (this.pauseButton) {
+            this.pauseButton.textContent = buttonText;
+        }
+        if (this.mobilePauseButton) {
+            this.mobilePauseButton.textContent = buttonText;
+        }
+    }
 }
 
 // 等待DOM完全加载
@@ -1213,7 +1231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 暂停按钮点击事件
     pauseButton.addEventListener('click', () => {
         gameController.togglePause();
-        pauseButton.textContent = gameController.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
     });
 
     // 重新开始按钮点击事件
@@ -1221,7 +1238,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 暂停游戏
         if (gameController.gameState === GAME_STATES.PLAYING) {
             gameController.togglePause();
-            pauseButton.textContent = '继续';
         }
         // 显示重新开始确认弹窗
         restartConfirmModal.classList.add('show');
@@ -1231,7 +1247,6 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmRestartButton.addEventListener('click', () => {
         restartConfirmModal.classList.remove('show');
         gameController.restartGame();
-        pauseButton.textContent = '暂停';
     });
 
     // 取消重新开始按钮点击事件
@@ -1240,7 +1255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 如果游戏之前是在进行中，则恢复游戏
         if (gameController.gameState === GAME_STATES.PAUSED) {
             gameController.togglePause();
-            pauseButton.textContent = '暂停';
         }
     });
 
@@ -1251,7 +1265,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 如果游戏之前是在进行中，则恢复游戏
             if (gameController.gameState === GAME_STATES.PAUSED) {
                 gameController.togglePause();
-                pauseButton.textContent = '暂停';
             }
         }
     });
@@ -1261,7 +1274,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 暂停游戏
         if (gameController.gameState === GAME_STATES.PLAYING) {
             gameController.togglePause();
-            pauseButton.textContent = '继续';
         }
         // 显示退出确认弹窗
         quitConfirmModal.classList.add('show');
@@ -1281,7 +1293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 如果游戏之前是在进行中，则恢复游戏
         if (gameController.gameState === GAME_STATES.PAUSED) {
             gameController.togglePause();
-            pauseButton.textContent = '暂停';
         }
     });
 
@@ -1292,7 +1303,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 如果游戏之前是在进行中，则恢复游戏
             if (gameController.gameState === GAME_STATES.PAUSED) {
                 gameController.togglePause();
-                pauseButton.textContent = '暂停';
             }
         }
     });
@@ -1353,8 +1363,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 移动端暂停按钮点击事件
     mobilePauseButton.addEventListener('click', () => {
         gameController.togglePause();
-        mobilePauseButton.textContent = gameController.gameState === GAME_STATES.PAUSED ? '继续' : '暂停';
-        pauseButton.textContent = mobilePauseButton.textContent; // 同步PC端按钮状态
     });
 
     // 移动端重新开始按钮点击事件
@@ -1362,8 +1370,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 暂停游戏
         if (gameController.gameState === GAME_STATES.PLAYING) {
             gameController.togglePause();
-            mobilePauseButton.textContent = '继续';
-            pauseButton.textContent = '继续';
         }
         // 显示重新开始确认弹窗
         restartConfirmModal.classList.add('show');
@@ -1374,8 +1380,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 暂停游戏
         if (gameController.gameState === GAME_STATES.PLAYING) {
             gameController.togglePause();
-            mobilePauseButton.textContent = '继续';
-            pauseButton.textContent = '继续';
         }
         // 显示退出确认弹窗
         quitConfirmModal.classList.add('show');
