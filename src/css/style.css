@@ -710,7 +710,6 @@ body {
     color: var(--color-text);
     font-size: 1.2rem;
     font-weight: bold;
-    padding: 0.2rem 0;
 }
 
 /* 游戏主区域 */
@@ -1326,7 +1325,7 @@ body {
     .mobile-score-item .score-value.current-score {
         font-size: 24px;
         font-weight: bold;
-        color: var(--color-text);
+        color: var(--color-primary-dark);
     }
 
     .mobile-user-avatar {
@@ -1432,6 +1431,26 @@ body {
     .game-button {
         padding: 0.6rem 1.2rem;
         font-size: 0.9rem;
+    }
+
+    /* 移动端游戏按钮样式 */
+    .touch-controls .game-button {
+        background: #cccccc;
+        color: var(--color-white);
+        transition: all 0.3s ease;
+    }
+
+    .touch-controls .game-button:hover {
+        background: #b8b8b8;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-large);
+    }
+
+    .touch-controls .game-button:active,
+    .touch-controls .game-button.clicked {
+        background: #a3a3a3;
+        transform: scale(0.95);
+        box-shadow: var(--shadow-normal);
     }
 }
 /* 横屏模式优化 */
