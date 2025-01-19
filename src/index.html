@@ -96,41 +96,51 @@
 
         <!-- 移动端布局 -->
         <div class="mobile-layout">
-            <!-- 顶部区域 -->
-            <div class="mobile-header">
-                <div class="mobile-next-piece">
-                    <canvas id="mobileNextCanvas"></canvas>
+            <!-- 上部游戏主区域 -->
+            <div class="mobile-main-area">
+                <!-- 左侧游戏区 -->
+                <div class="mobile-game-area">
+                    <canvas id="mobileGameCanvas"></canvas>
                 </div>
-                <div class="mobile-score-info">
-                    <div class="mobile-score-item">
-                        <span id="mobileScore" class="score-value current-score">0</span>
+
+                <!-- 右侧信息区 -->
+                <div class="mobile-info-area">
+                    <!-- 用户头像 -->
+                    <div class="mobile-user-avatar">
+                        <img id="mobileAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
                     </div>
+
+                    <!-- 最高分 -->
                     <div class="mobile-score-item">
                         <span class="score-label">最高分</span>
                         <span id="mobileHighScore" class="score-value">0</span>
                     </div>
-                </div>
-                <div class="mobile-level-info">
+
+                    <!-- 当前分数 -->
+                    <div class="mobile-score-item">
+                        <span id="mobileScore" class="score-value current-score">0</span>
+                    </div>
+
+                    <!-- 下一个方块预览 -->
+                    <div class="mobile-next-piece">
+                        <canvas id="mobileNextCanvas"></canvas>
+                    </div>
+
+                    <!-- 等级 -->
                     <div class="mobile-score-item">
                         <span class="score-label">等级</span>
                         <span id="mobileLevel" class="score-value">1</span>
                     </div>
+
+                    <!-- 消除行数 -->
                     <div class="mobile-score-item">
                         <span class="score-label">消除</span>
                         <span id="mobileLines" class="score-value">0</span>
                     </div>
                 </div>
-                <div class="mobile-user-avatar">
-                    <img id="mobileAvatarPreview" src="assets/images/default-avatar.svg" alt="用户头像">
-                </div>
             </div>
 
-            <!-- 中部游戏区域 -->
-            <div class="mobile-game-area">
-                <canvas id="mobileGameCanvas"></canvas>
-            </div>
-
-            <!-- 底部控制区域 -->
+            <!-- 底部控制区 -->
             <div class="touch-controls">
                 <!-- 第一行：游戏操作按钮 -->
                 <div class="touch-controls-row">
@@ -139,32 +149,33 @@
                             <path d="M15 4L7 12L15 20" stroke="white" stroke-width="2" fill="none"/>
                         </svg>
                     </button>
+                    <button class="touch-btn" id="moveRight">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 4L17 12L9 20" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                    <button class="touch-btn" id="hardDrop">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
                     <button class="touch-btn" id="rotate">
                         <svg viewBox="0 0 24 24">
                             <path d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4" stroke="white" stroke-width="2" fill="none"/>
                             <path d="M12 8L8 4L12 0" stroke="white" stroke-width="2" fill="none" transform="translate(0, 4)"/>
                         </svg>
                     </button>
-                    <button class="touch-btn" id="softDrop">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="white" stroke-width="2" fill="none"/>
-                        </svg>
-                    </button>
-                    <button class="touch-btn" id="moveRight">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M9 4L17 12L9 20" stroke="white" stroke-width="2" fill="none"/>
-                        </svg>
-                    </button>
                 </div>
+
                 <!-- 第二行：功能按钮 -->
                 <div class="touch-controls-row">
-                    <button class="game-button" id="mobileRestartGame">重来</button>
-                    <button class="game-button" id="mobilePauseGame">暂停</button>
-                    <button class="touch-btn" id="hardDrop">
+                    <button class="touch-btn" id="softDrop">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 4L12 16M12 16L6 10M12 16L18 10" stroke="white" stroke-width="2" fill="none"/>
                         </svg>
                     </button>
+                    <button class="game-button" id="mobileRestartGame">重来</button>
+                    <button class="game-button" id="mobilePauseGame">暂停</button>
                     <button class="game-button" id="mobileQuitGame">退出</button>
                 </div>
             </div>
