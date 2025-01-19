@@ -1,5 +1,5 @@
 .touch-controls {
-  padding: 2vmin 2vmin 6vmin 2vmin;
+  padding: 1rem 2vmin 6vmin 2vmin;
   backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;

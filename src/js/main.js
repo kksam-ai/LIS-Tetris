@@ -583,7 +583,7 @@ class GameScreenManager {
         this.mobileNextCanvas.style.height = `${previewSize}px`;
 
         // 设置预览画布背景颜色
-        this.mobileNextCtx.fillStyle = previewBgColor;
+        this.mobileNextCtx.fillStyle = '#FFFFFF';
         this.mobileNextCtx.fillRect(0, 0, previewSize, previewSize);
 
         // 存储计算出的尺寸供其他方法使用
@@ -592,7 +592,7 @@ class GameScreenManager {
             width: gameArea.width,
             height: gameArea.height,
             previewSize,
-            previewBgColor  // 保存预览画布背景色以供其他方法使用
+            previewBgColor: '#FFFFFF'  // 保存预览画布背景色以供其他方法使用
         };
     }
 
