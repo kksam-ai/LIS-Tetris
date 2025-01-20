@@ -3,11 +3,12 @@
     <!-- 背景圆 -->
     <circle cx="50" cy="50" r="50" fill="#98D8C1"/>
 
-    <!-- 头像图标 -->
-    <g transform="translate(25, 20)">
-        <!-- 头部 -->
-        <circle cx="25" cy="25" r="15" fill="#E8F6F1"/>
-        <!-- 身体 -->
-        <path d="M0 45 C0 35 50 35 50 45 L50 60 L0 60 Z" fill="#E8F6F1"/>
+    <!-- 头像图标 - 线条风格 -->
+    <g transform="translate(25, 5)" stroke="#E8F6F1" stroke-width="3" fill="none">
+        <!-- 头部轮廓 -->
+        <circle cx="25" cy="25" r="15"/>
+
+        <!-- 身体轮廓 - 大半圆(向下) -->
+        <path d="M-5 62 A35 35 0 0 1 55 62" stroke-linecap="round"/>
     </g>
 </svg>
