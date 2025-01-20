@@ -83,10 +83,17 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-normal);
-    max-width: 20rem;
-    width: 100%;
     text-align: center;
     outline: none;
+}
+
+/* PC端按钮样式 */
+@media (min-width: 481px) {
+    .button-container .game-button {
+        width: auto;
+        min-width: 202px;
+        max-width: 220px;
+    }
 }
 
 .game-button::after {
@@ -162,6 +169,7 @@ body {
     /* 初始界面按钮样式 */
     .button-container .game-button {
         max-width: 280px;
+        width: 100%;
         min-height: 56px;
         font-size: 1.2rem;
         margin: 0.8rem auto;
@@ -180,10 +188,11 @@ body {
     }
 
     /* Modal中的按钮样式 */
-    .modal-content .game-over-buttons {
+    .modal-content .game-over-buttons,
+    .modal-content .quit-confirm-buttons {
         display: flex;
         flex-direction: column;
-        gap: 2.5rem !important;
+        gap: 1rem !important;
         padding: 0.5rem;
         margin-bottom: 1rem;
         justify-content: center;
@@ -191,12 +200,16 @@ body {
 
     .game-over-buttons .game-button,
     .modal-content .game-button {
+        flex: none;
+        width: 100%;
         max-width: 280px;
-        min-height: 56px;
-        font-size: 1.2rem;
+        min-width: 200px;
+        min-height: 48px;
+        font-size: 1.1rem;
         margin: 0 auto;
         border-radius: 25px;
-        padding: 0.8rem 2rem;
+        padding: 0.6rem 1rem;
+        white-space: nowrap;
     }
 
     /* 退出确认按钮 */
@@ -1637,6 +1650,14 @@ body {
     }
     100% {
         transform: rotate(-90deg);
+    }
+}
+
+/* PC端游戏结束按钮样式 */
+@media (min-width: 481px) {
+    .game-over-buttons .game-button {
+        flex: 1;
+        max-width: 150px;
     }
 }
 
