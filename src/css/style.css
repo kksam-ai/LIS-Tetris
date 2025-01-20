@@ -7,7 +7,7 @@
 
     /* 背景色 */
     --color-bg-gradient-1: #E8F6F1;  /* 渐变背景色1 */
-    --color-bg-gradient-2: #F9E7E7;  /* 渐变背景色2 */
+    --color-bg-gradient-2: #F5F9F7;  /* 渐变背景色2 */
     --gradient-bg: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
 
     /* 文字颜色 */
