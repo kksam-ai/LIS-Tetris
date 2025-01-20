@@ -8,6 +8,7 @@
     /* 背景色 */
     --color-bg-gradient-1: #E8F6F1;  /* 渐变背景色1 */
     --color-bg-gradient-2: #F9E7E7;  /* 渐变背景色2 */
+    --gradient-bg: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
 
     /* 文字颜色 */
     --color-text: #4A6670;           /* 主要文字颜色 */
@@ -38,10 +39,8 @@ body {
     padding: 0;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--color-bg-gradient-1), var(--color-bg-gradient-2));
+    background: var(--gradient-bg);
     color: var(--color-text);
-    background-color: var(--color-body-bg);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -238,6 +237,12 @@ body {
 
 .modal.show {
     display: flex;
+}
+
+/* 横屏提示modal的特殊背景 */
+#landscapeModal.modal {
+    background: var(--gradient-bg);
+    backdrop-filter: none;
 }
 
 .modal-content {
@@ -1588,6 +1593,50 @@ body {
 
     .mobile-game-area {
         padding: var(--game-margin) 15vw;
+    }
+}
+
+/* 横屏提示modal样式 */
+.landscape-modal {
+    max-width: 300px !important;
+    padding: 2rem !important;
+    text-align: center;
+    background: var(--color-white) !important;
+}
+
+.landscape-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.rotate-phone-icon {
+    width: 80px;
+    height: 80px;
+    color: var(--color-primary);
+    animation: rotatePhone 1.5s ease-in-out infinite;
+}
+
+.landscape-warning p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    margin: 0;
+}
+
+@keyframes rotatePhone {
+    0% {
+        transform: rotate(-90deg);
+    }
+    20% {
+        transform: rotate(0deg);
+    }
+    80% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-90deg);
     }
 }
 

@@ -547,9 +547,11 @@ class GameScreenManager {
 
         this.isPaused = false;
         this.isMobile = window.innerWidth <= 480;
+        this.gameController = null; // 添加gameController引用
 
         this.initializeCanvases();
         this.setupResizeHandler();
+        this.initOrientationDetection();
     }
 
     // 初始化画布
@@ -576,27 +578,37 @@ class GameScreenManager {
 
     // 绘制PC端网格
     drawGrid() {
-        const width = this.gameCanvas.width;
-        const height = this.gameCanvas.height;
-        const gridSize = GAME_CONFIG.CANVAS.MAIN.GRID_SIZE;
+        const drawGridOnCanvas = (ctx, width, height, cellSize) => {
+            ctx.save();
+            ctx.strokeStyle = '#CCCCCC';
+            ctx.lineWidth = 0.5;
 
-        this.gameCtx.strokeStyle = 'var(--grid-border-color)';
-        this.gameCtx.lineWidth = 0.5;
+            // 绘制垂直线
+            for (let x = 0; x <= width; x += cellSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
 
-        // 绘制垂直线
-        for (let x = 0; x <= width; x += gridSize) {
-            this.gameCtx.beginPath();
-            this.gameCtx.moveTo(x, 0);
-            this.gameCtx.lineTo(x, height);
-            this.gameCtx.stroke();
+            // 绘制水平线
+            for (let y = 0; y <= height; y += cellSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            ctx.restore();
         }
 
-        // 绘制水平线
-        for (let y = 0; y <= height; y += gridSize) {
-            this.gameCtx.beginPath();
-            this.gameCtx.moveTo(0, y);
-            this.gameCtx.lineTo(width, y);
-            this.gameCtx.stroke();
+        // 只在PC端画布上绘制网格
+        if (!this.isMobile) {
+            drawGridOnCanvas(
+                this.gameCtx,
+                GAME_CONFIG.CANVAS.MAIN.WIDTH,
+                GAME_CONFIG.CANVAS.MAIN.HEIGHT,
+                GAME_CONFIG.CANVAS.MAIN.GRID_SIZE
+            );
         }
     }
 
@@ -700,6 +712,48 @@ class GameScreenManager {
     // 切换暂停状态
     togglePause() {
         this.isPaused = !this.isPaused;
+    }
+
+    initOrientationDetection() {
+        // 获取横屏提示modal
+        this.landscapeModal = document.getElementById('landscapeModal');
+
+        // 使用matchMedia API检测屏幕方向
+        const mediaQuery = window.matchMedia("(orientation: landscape)");
+
+        // 检查初始状态
+        if (Math.min(window.innerWidth, window.innerHeight) <= 480 && mediaQuery.matches) {
+            this.showLandscapeModal();
+        }
+
+        // 监听屏幕方向变化
+        mediaQuery.addEventListener("change", (e) => {
+            if (Math.min(window.innerWidth, window.innerHeight) <= 480) {
+                if (e.matches) {
+                    this.showLandscapeModal();
+                } else {
+                    this.hideLandscapeModal();
+                }
+            } else {
+                this.hideLandscapeModal();
+            }
+        });
+    }
+
+    showLandscapeModal() {
+        this.landscapeModal.classList.add('show');
+        // 如果游戏正在进行,暂停游戏,但不重新渲染画布
+        if (this.gameController && this.gameController.gameState === GAME_STATES.PLAYING) {
+            this.gameController.pause(); // 直接调用pause而不是togglePause
+        }
+    }
+
+    hideLandscapeModal() {
+        this.landscapeModal.classList.remove('show');
+        // 如果游戏处于暂停状态,恢复游戏
+        if (this.gameController && this.gameController.gameState === GAME_STATES.PAUSED) {
+            this.gameController.resume(); // 直接调用resume而不是togglePause
+        }
     }
 }
 
@@ -843,17 +897,33 @@ class GameController {
     }
 
     // 暂停游戏
-    togglePause() {
+    pause() {
         if (this.gameState === GAME_STATES.PLAYING) {
             console.log('Game paused');
             this.gameState = GAME_STATES.PAUSED;
             cancelAnimationFrame(this.animationId);
-        } else if (this.gameState === GAME_STATES.PAUSED) {
+            this.updatePauseButtonsState();
+        }
+    }
+
+    // 恢复游戏
+    resume() {
+        if (this.gameState === GAME_STATES.PAUSED) {
             console.log('Game resumed');
             this.gameState = GAME_STATES.PLAYING;
-            this.gameLoop(performance.now());
+            this.lastTime = 0; // 重置lastTime以避免大的时间差
+            this.gameLoop();
+            this.updatePauseButtonsState();
         }
-        this.updatePauseButtonsState(); // 添加按钮状态更新
+    }
+
+    // 切换暂停状态
+    togglePause() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.pause();
+        } else if (this.gameState === GAME_STATES.PAUSED) {
+            this.resume();
+        }
     }
 
     // 游戏结束
@@ -1242,6 +1312,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsManager = new SettingsManager();
     const screenManager = new GameScreenManager();
     const gameController = new GameController(settingsManager, screenManager);
+
+    // 设置screenManager的gameController引用
+    screenManager.gameController = gameController;
 
     // 获取DOM元素
     const startButton = document.getElementById('startGame');
