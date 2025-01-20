@@ -698,6 +698,30 @@ class GameController {
 
         // 初始化触控按钮
         this.initTouchControls();
+
+        // 添加页面可见性变化监听
+        this.wasPlaying = false;
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面隐藏时，记录当前游戏状态
+                this.wasPlaying = this.gameState === GAME_STATES.PLAYING;
+                if (this.wasPlaying) {
+                    this.togglePause();
+                }
+            } else {
+                // 页面重新显示时，如果之前在游戏中，则重新渲染并继续
+                if (this.wasPlaying) {
+                    // 重新渲染当前状态
+                    this.renderer.renderBoard(this.board);
+                    this.renderer.renderNextPiece(this.board.nextPiece);
+                    if (this.screenManager.isMobile) {
+                        this.renderMobileGame();
+                    }
+                    // 恢复游戏
+                    this.togglePause();
+                }
+            }
+        });
     }
 
     // 加载最高分
