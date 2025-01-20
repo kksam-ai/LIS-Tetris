@@ -775,8 +775,8 @@ body {
 
 .next-piece h3 {
     color: var(--color-text);
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
 }
 
 #nextCanvas {
@@ -796,8 +796,8 @@ body {
 
 .controls-info h3 {
     color: var(--color-text);
-    margin-bottom: 0.8rem;
-    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
 }
 
 .controls-info ul {
@@ -808,9 +808,14 @@ body {
 
 .controls-info li {
     color: var(--color-text);
-    padding: 0.4rem 0;
+    padding: 0.2rem 0;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+}
+
+.key-hint {
+    color: #999;
+    font-size: 0.8rem;
 }
 
 /* 游戏控制 */

@@ -414,11 +414,13 @@ class KeySettingsManager {
         if (savedSettings) {
             this.keySettings = JSON.parse(savedSettings);
         }
+        this.updateControlsInfo();  // 初始化时更新操作说明
     }
 
     // 保存按键设置
     saveSettings() {
         localStorage.setItem('tetrisKeySettings', JSON.stringify(this.keySettings));
+        this.updateControlsInfo();  // 保存设置时更新操作说明
     }
 
     // 设置按键
@@ -482,6 +484,48 @@ class KeySettingsManager {
     isActionKey(action, key) {
         const keys = this.keySettings[action];
         return key === keys.primary || key === keys.secondary;
+    }
+
+    // 获取按键显示名称
+    getKeyDisplayName(keyCode) {
+        if (!keyCode) return '未设置';
+        switch (keyCode) {
+            case 'Space': return '空格';
+            case 'ArrowLeft': return '←';
+            case 'ArrowRight': return '→';
+            case 'ArrowDown': return '↓';
+            case 'ArrowUp': return '↑';
+            default: return keyCode.replace('Key', '');
+        }
+    }
+
+    // 获取动作的按键显示文本
+    getActionKeysText(action) {
+        const keys = this.keySettings[action];
+        const primary = this.getKeyDisplayName(keys.primary);
+        const secondary = keys.secondary ? this.getKeyDisplayName(keys.secondary) : null;
+        return secondary ? `${primary} / ${secondary}` : primary;
+    }
+
+    // 更新操作说明
+    updateControlsInfo() {
+        const controlsList = document.querySelector('.controls-info ul');
+        if (!controlsList) return;
+
+        // 特殊处理移动方块的文案
+        const moveLeftKeys = this.getKeyDisplayName(this.keySettings.moveLeft.primary) + ' ' + this.getKeyDisplayName(this.keySettings.moveLeft.secondary);
+        const moveRightKeys = this.getKeyDisplayName(this.keySettings.moveRight.primary) + ' ' + this.getKeyDisplayName(this.keySettings.moveRight.secondary);
+        const moveKeys = `${moveLeftKeys.split(' ')[0]} ${moveRightKeys.split(' ')[0]} / ${moveLeftKeys.split(' ')[1]} ${moveRightKeys.split(' ')[1]}`;
+
+        const controlsText = [
+            `${moveKeys} 移动方块`,
+            `${this.getActionKeysText('rotate')} 旋转方块`,
+            `${this.getActionKeysText('moveDown')} 加速下落`,
+            `${this.getActionKeysText('hardDrop')} 直接降落到底部`,
+            `<span class="key-hint">可以在设置中自定义按键</span>`
+        ];
+
+        controlsList.innerHTML = controlsText.map(text => `<li>${text}</li>`).join('');
     }
 }
 
