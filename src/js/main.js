@@ -1094,16 +1094,6 @@ class GameController {
         }
     }
 
-    startSoftDrop() {
-        if (this.gameState === GAME_STATES.PLAYING) {
-            this.board.movePiece(0, 1);
-        }
-    }
-
-    stopSoftDrop() {
-        // 停止加速下落,不需要特殊处理
-    }
-
     hardDrop() {
         if (this.gameState === GAME_STATES.PLAYING) {
             const linesCleared = this.board.hardDrop();
@@ -1121,7 +1111,6 @@ class GameController {
             moveLeft: document.getElementById('moveLeft'),
             hardDrop: document.getElementById('hardDrop'),
             rotate: document.getElementById('rotate'),
-            softDrop: document.getElementById('softDrop'),
             moveRight: document.getElementById('moveRight')
         };
 
@@ -1157,22 +1146,6 @@ class GameController {
         touchButtons.rotate.addEventListener('mousedown', () => {
             console.log('Rotate button clicked');
             this.rotate();
-        });
-
-        touchButtons.softDrop.addEventListener('touchstart', () => {
-            this.startSoftDrop();
-        });
-        touchButtons.softDrop.addEventListener('touchend', () => {
-            this.stopSoftDrop();
-        });
-        touchButtons.softDrop.addEventListener('mousedown', () => {
-            this.startSoftDrop();
-        });
-        touchButtons.softDrop.addEventListener('mouseup', () => {
-            this.stopSoftDrop();
-        });
-        touchButtons.softDrop.addEventListener('mouseleave', () => {
-            this.stopSoftDrop();
         });
 
         touchButtons.hardDrop.addEventListener('touchstart', () => {
