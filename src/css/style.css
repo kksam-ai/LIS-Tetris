@@ -1365,26 +1365,27 @@ body {
 
     /* 撤销按钮样式 */
     .mobile-game-controls .undo-button {
-        background: var(--color-primary);
-        opacity: 0.9;
+        background: #F4B8C3 !important;  /* 基础粉红色 */
+        opacity: 1;
     }
 
     .mobile-game-controls .undo-button:disabled {
-        background: #E0E0E0;
+        background: #FFE4E8 !important;  /* 更浅的粉红色表示禁用状态 */
         cursor: not-allowed;
         transform: none !important;
         box-shadow: none !important;
+        opacity: 0.8;
     }
 
     .mobile-game-controls .undo-button:not(:disabled):hover {
-        background: var(--color-primary-dark);
+        background: #F29DAB !important;  /* 深一点的粉红色用于悬浮 */
         transform: translateY(-2px);
         box-shadow: var(--shadow-large);
     }
 
     .mobile-game-controls .undo-button:not(:disabled):active,
     .mobile-game-controls .undo-button:not(:disabled).clicked {
-        background: var(--color-primary-dark);
+        background: #EF8293 !important;  /* 更深的粉红色用于点击状态 */
         transform: scale(0.95);
         box-shadow: var(--shadow-normal);
     }
