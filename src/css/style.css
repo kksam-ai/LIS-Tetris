@@ -1552,7 +1552,7 @@ body {
     .touch-controls-row:nth-child(2) {
         display: flex;
         justify-content: flex-start;
-        padding-left: 17vmin;
+        padding-left: var(--second-row-padding-left, 17vmin);
         /* 使用相对单位来保持按钮之间的间距比例 */
     }
 

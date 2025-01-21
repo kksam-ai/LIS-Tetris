@@ -651,10 +651,11 @@ class GameScreenManager {
         const style = window.getComputedStyle(touchControls);
         const paddingTop = parseFloat(style.paddingTop);
         const paddingBottom = parseFloat(style.paddingBottom);
-        const gap = parseFloat(style.gap);
+        const paddingLeft = parseFloat(style.paddingLeft);
+        const paddingRight = parseFloat(style.paddingRight);
 
         // 计算可用高度
-        const availableHeight = touchControls.offsetHeight - paddingTop - paddingBottom - gap;
+        const availableHeight = touchControls.offsetHeight - paddingTop - paddingBottom;
 
         // 计算按钮尺寸 (高度除以2，因为有两行)
         let buttonSize = Math.floor(availableHeight / 2);
@@ -664,6 +665,30 @@ class GameScreenManager {
 
         // 设置 CSS 变量
         document.documentElement.style.setProperty('--touch-btn-size', `${buttonSize}px`);
+
+        // 计算第二行的 padding-left
+        const firstRow = touchControls.querySelector('.touch-controls-row:first-child');
+        if (firstRow) {
+            // 计算可用总宽度
+            const windowWidth = window.innerWidth;
+            const availableWidth = windowWidth - paddingLeft - paddingRight;
+
+            // 计算总的剩余空间
+            const totalButtonsWidth = buttonSize * 4;
+            const remainingSpace = availableWidth - totalButtonsWidth;
+
+            // 计算gap（3个主要gap + 2个半边gap = 4个gap）
+            const gap = remainingSpace / 4;
+
+            // 边缘的gap是主要gap的一半
+            const edgeGap = gap / 2;
+
+            // 计算需要的 padding-left（左边缘gap + 第一个按钮宽度 + 半个主要gap - 半个按钮宽度）
+            const paddingLeftValue = edgeGap + buttonSize + gap/2 - buttonSize/2;
+
+            // 设置 CSS 变量
+            document.documentElement.style.setProperty('--second-row-padding-left', `${paddingLeftValue}px`);
+        }
     }
 
     // 修改 setupResizeHandler 方法
