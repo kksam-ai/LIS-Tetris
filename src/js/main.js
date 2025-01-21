@@ -380,7 +380,9 @@ class KeySettingsManager {
             moveRight: 'ArrowRight',
             moveDown: 'ArrowDown',
             rotate: 'Space',
-            hardDrop: 'KeyF'
+            hardDrop: 'KeyF',
+            pause: 'KeyP',
+            undo: 'KeyG'
         };
         this.loadSettings();
     }
@@ -427,7 +429,9 @@ class KeySettingsManager {
             moveRight: 'ArrowRight',
             moveDown: 'ArrowDown',
             rotate: 'Space',
-            hardDrop: 'KeyF'
+            hardDrop: 'KeyF',
+            pause: 'KeyP',
+            undo: 'KeyG'
         };
         this.saveSettings();
     }
@@ -465,6 +469,8 @@ class KeySettingsManager {
             `${this.getActionKeysText('rotate')} 旋转方块`,
             `${this.getActionKeysText('moveDown')} 加速下落`,
             `${this.getActionKeysText('hardDrop')} 直接降落到底部`,
+            `${this.getActionKeysText('undo')} 撤销上一个方块`,
+            `${this.getActionKeysText('pause')} 暂停游戏`,
             `<span class="key-hint">可以在设置中自定义按键</span>`
         ];
 
@@ -801,13 +807,23 @@ class GameController {
     // 绑定键盘事件
     bindKeyboardEvents() {
         document.addEventListener('keydown', (event) => {
-            if (this.gameState !== GAME_STATES.PLAYING) return;
+            if (this.gameState !== GAME_STATES.PLAYING &&
+                this.gameState !== GAME_STATES.PAUSED) return;
 
             // 阻止游戏控制按键的默认行为
             if (Object.values(this.keySettingsManager.keySettings).some(keyCode =>
                 event.code === keyCode)) {
                 event.preventDefault();
             }
+
+            // 暂停/继续游戏
+            if (this.keySettingsManager.isActionKey('pause', event.code)) {
+                this.togglePause();
+                return;
+            }
+
+            // 只有在游戏进行中才处理其他按键
+            if (this.gameState !== GAME_STATES.PLAYING) return;
 
             if (this.keySettingsManager.isActionKey('moveLeft', event.code)) {
                 this.board.movePiece(-1, 0);
@@ -824,6 +840,8 @@ class GameController {
                     this.gameOver();
                     return;
                 }
+            } else if (this.keySettingsManager.isActionKey('undo', event.code)) {
+                this.undoMove();
             }
         });
     }
