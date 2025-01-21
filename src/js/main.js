@@ -281,6 +281,11 @@ class SettingsManager {
 
     // 初始化按键设置
     initializeKeySettings() {
+        // 在移动端不初始化按键设置
+        if (window.innerWidth <= 480) {
+            return;
+        }
+
         const keyButtons = document.querySelectorAll('.key-button');
         const restoreDefaultKeys = document.getElementById('restoreDefaultKeys');
         let listeningButton = null;
@@ -289,8 +294,7 @@ class SettingsManager {
         const updateKeyDisplay = () => {
             keyButtons.forEach(button => {
                 const action = button.dataset.action;
-                const type = button.dataset.type;
-                const keyCode = this.keySettingsManager.keySettings[action][type];
+                const keyCode = this.keySettingsManager.keySettings[action];
                 const keyText = button.querySelector('.key-text');
                 keyText.textContent = this.getKeyDisplayName(keyCode);
             });
@@ -325,19 +329,6 @@ class SettingsManager {
                 listeningButton = button;
                 button.querySelector('.key-text').textContent = '请按键...';
             });
-
-            // 处理清除按钮点击
-            const clearButton = button.querySelector('.key-clear');
-            clearButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const action = button.dataset.action;
-                const type = button.dataset.type;
-                if (this.keySettingsManager.clearKey(action, type)) {
-                    updateKeyDisplay();
-                } else {
-                    alert('每个功能必须保留至少一个按键！');
-                }
-            });
         });
 
         // 监听键盘事件
@@ -346,10 +337,9 @@ class SettingsManager {
 
             e.preventDefault();
             const action = listeningButton.dataset.action;
-            const type = listeningButton.dataset.type;
 
             // 设置新按键
-            if (this.keySettingsManager.setKey(action, type, e.code)) {
+            if (this.keySettingsManager.setKey(action, e.code)) {
                 listeningButton.classList.remove('listening');
                 listeningButton = null;
                 updateKeyDisplay();
@@ -368,12 +358,14 @@ class SettingsManager {
         });
 
         // 恢复默认按键
-        restoreDefaultKeys.addEventListener('click', () => {
-            if (confirm('确定要恢复默认按键设置吗？')) {
-                this.keySettingsManager.restoreDefaults();
-                updateKeyDisplay();
-            }
-        });
+        if (restoreDefaultKeys) {
+            restoreDefaultKeys.addEventListener('click', () => {
+                if (confirm('确定要恢复默认按键设置吗？')) {
+                    this.keySettingsManager.restoreDefaults();
+                    updateKeyDisplay();
+                }
+            });
+        }
 
         // 初始显示
         updateKeyDisplay();
@@ -384,26 +376,11 @@ class SettingsManager {
 class KeySettingsManager {
     constructor() {
         this.keySettings = {
-            moveLeft: {
-                primary: 'ArrowLeft',
-                secondary: 'KeyH'
-            },
-            moveRight: {
-                primary: 'ArrowRight',
-                secondary: 'KeyL'
-            },
-            moveDown: {
-                primary: 'ArrowDown',
-                secondary: 'KeyJ'
-            },
-            rotate: {
-                primary: 'Space',
-                secondary: 'KeyK'
-            },
-            hardDrop: {
-                primary: 'KeyF',
-                secondary: 'KeyW'
-            }
+            moveLeft: 'ArrowLeft',
+            moveRight: 'ArrowRight',
+            moveDown: 'ArrowDown',
+            rotate: 'Space',
+            hardDrop: 'KeyF'
         };
         this.loadSettings();
     }
@@ -424,66 +401,40 @@ class KeySettingsManager {
     }
 
     // 设置按键
-    setKey(action, type, key) {
+    setKey(action, key) {
         // 检查按键冲突
-        for (const [act, keys] of Object.entries(this.keySettings)) {
-            if (act !== action) {
-                if (keys.primary === key || keys.secondary === key) {
-                    return false; // 按键已被使用
-                }
+        for (const [act, keyCode] of Object.entries(this.keySettings)) {
+            if (act !== action && keyCode === key) {
+                return false; // 按键已被使用
             }
         }
 
         // 设置新按键
-        this.keySettings[action][type] = key;
+        this.keySettings[action] = key;
         this.saveSettings();
         return true;
     }
 
     // 清除按键
-    clearKey(action, type) {
-        // 检查是否可以清除
-        const keys = this.keySettings[action];
-        if (type === 'primary' && !keys.secondary || type === 'secondary' && !keys.primary) {
-            return false; // 不能清除唯一的按键
-        }
-
-        this.keySettings[action][type] = null;
-        this.saveSettings();
-        return true;
+    clearKey(action) {
+        return false; // 不允许清除按键,每个功能必须有一个按键
     }
 
     // 恢复默认设置
     restoreDefaults() {
         this.keySettings = {
-            moveLeft: {
-                primary: 'ArrowLeft',
-                secondary: 'KeyH'
-            },
-            moveRight: {
-                primary: 'ArrowRight',
-                secondary: 'KeyL'
-            },
-            moveDown: {
-                primary: 'ArrowDown',
-                secondary: 'KeyJ'
-            },
-            rotate: {
-                primary: 'Space',
-                secondary: 'KeyK'
-            },
-            hardDrop: {
-                primary: 'KeyF',
-                secondary: 'KeyW'
-            }
+            moveLeft: 'ArrowLeft',
+            moveRight: 'ArrowRight',
+            moveDown: 'ArrowDown',
+            rotate: 'Space',
+            hardDrop: 'KeyF'
         };
         this.saveSettings();
     }
 
     // 检查按键是否匹配动作
     isActionKey(action, key) {
-        const keys = this.keySettings[action];
-        return key === keys.primary || key === keys.secondary;
+        return key === this.keySettings[action];
     }
 
     // 获取按键显示名称
@@ -501,10 +452,7 @@ class KeySettingsManager {
 
     // 获取动作的按键显示文本
     getActionKeysText(action) {
-        const keys = this.keySettings[action];
-        const primary = this.getKeyDisplayName(keys.primary);
-        const secondary = keys.secondary ? this.getKeyDisplayName(keys.secondary) : null;
-        return secondary ? `${primary} / ${secondary}` : primary;
+        return this.getKeyDisplayName(this.keySettings[action]);
     }
 
     // 更新操作说明
@@ -512,13 +460,8 @@ class KeySettingsManager {
         const controlsList = document.querySelector('.controls-info ul');
         if (!controlsList) return;
 
-        // 特殊处理移动方块的文案
-        const moveLeftKeys = this.getKeyDisplayName(this.keySettings.moveLeft.primary) + ' ' + this.getKeyDisplayName(this.keySettings.moveLeft.secondary);
-        const moveRightKeys = this.getKeyDisplayName(this.keySettings.moveRight.primary) + ' ' + this.getKeyDisplayName(this.keySettings.moveRight.secondary);
-        const moveKeys = `${moveLeftKeys.split(' ')[0]} ${moveRightKeys.split(' ')[0]} / ${moveLeftKeys.split(' ')[1]} ${moveRightKeys.split(' ')[1]}`;
-
         const controlsText = [
-            `${moveKeys} 移动方块`,
+            `${this.getKeyDisplayName(this.keySettings.moveLeft)} ${this.getKeyDisplayName(this.keySettings.moveRight)} 移动方块`,
             `${this.getActionKeysText('rotate')} 旋转方块`,
             `${this.getActionKeysText('moveDown')} 加速下落`,
             `${this.getActionKeysText('hardDrop')} 直接降落到底部`,
@@ -861,8 +804,8 @@ class GameController {
             if (this.gameState !== GAME_STATES.PLAYING) return;
 
             // 阻止游戏控制按键的默认行为
-            if (Object.values(this.keySettingsManager.keySettings).some(keys =>
-                event.code === keys.primary || event.code === keys.secondary)) {
+            if (Object.values(this.keySettingsManager.keySettings).some(keyCode =>
+                event.code === keyCode)) {
                 event.preventDefault();
             }
 

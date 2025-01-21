@@ -446,7 +446,6 @@ body {
     flex-direction: row;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 0;
 }
 
 .radio-container {
@@ -527,8 +526,9 @@ body {
 }
 
 .key-setting-row {
-    padding: 0.5rem;
-    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .key-settings-buttons {
@@ -684,7 +684,6 @@ body {
     height: 40px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid var(--color-primary);
 }
 
 .user-avatar-small img {
@@ -1174,102 +1173,64 @@ body {
 
 .key-setting-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0.2rem 0.8rem;
-    background: var(--color-background);
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-    margin-bottom: 0.1rem;
-}
-
-.key-setting-row:hover {
-    background: var(--color-canvas-bg);
+    justify-content: space-between;
 }
 
 .key-label {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: var(--color-text);
-    flex: 1;
+    min-width: 60px;
 }
 
 .key-buttons {
     display: flex;
-    gap: 0.8rem;
+    gap: 0.5rem;
 }
 
 .key-button {
-    position: relative;
     display: flex;
     align-items: center;
-    min-width: 70px;
-    padding: 0.4rem 0.8rem;
+    justify-content: center;
     background: var(--color-white);
-    border: 2px solid var(--color-primary-light);
-    border-radius: 6px;
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    min-width: 60px;
 }
 
 .key-button:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-primary-light);
+    background: var(--color-bg-gradient-1);
 }
 
 .key-button.listening {
-    border-color: var(--color-primary);
     background: var(--color-primary-light);
+    border-color: var(--color-primary);
 }
 
 .key-text {
-    flex: 1;
-    text-align: center;
     font-size: 0.9rem;
     color: var(--color-text);
 }
 
-.key-clear {
-    display: none;
-    position: absolute;
-    right: 0.2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--color-text-light);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0.2rem;
-    transition: color 0.3s ease;
-}
-
-.key-button:hover .key-clear {
-    display: block;
-}
-
-.key-clear:hover {
-    color: var(--color-text);
-}
-
-.key-settings-buttons {
-    margin-top: 1.5rem;
+.key-setting-row {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.key-buttons {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .key-settings-help {
     margin-top: 1rem;
-    padding: 1rem;
-    background: var(--color-background);
-    border-radius: 8px;
-}
-
-.key-settings-help p {
-    margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--color-text-light);
-    text-align: center;
-    line-height: 1.5;
 }
 
 /* 移动端布局控制 */
