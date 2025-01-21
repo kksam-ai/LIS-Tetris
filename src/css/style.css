@@ -1539,6 +1539,7 @@ body {
         display: flex;
         flex-direction: column;
         gap: 2vmin;
+        align-items: center;
     }
 
     /* 控制按钮行 */
@@ -1548,7 +1549,14 @@ body {
         align-items: flex-start;
         gap: 2vmin;
         width: 100%;
-        flex: 1;
+        height: auto;
+    }
+
+    .touch-controls-row:nth-child(2) {
+        display: flex;
+        justify-content: flex-start;
+        padding-left: 17vmin;
+        /* 使用相对单位来保持按钮之间的间距比例 */
     }
 
     .touch-btn {

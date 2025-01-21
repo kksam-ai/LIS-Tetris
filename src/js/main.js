@@ -1249,7 +1249,8 @@ class GameController {
             moveLeft: document.getElementById('moveLeft'),
             hardDrop: document.getElementById('hardDrop'),
             rotate: document.getElementById('rotate'),
-            moveRight: document.getElementById('moveRight')
+            moveRight: document.getElementById('moveRight'),
+            softDrop: document.getElementById('softDrop')
         };
 
         // 防止触摸事件引起页面滚动
@@ -1292,6 +1293,29 @@ class GameController {
         touchButtons.hardDrop.addEventListener('mousedown', () => {
             this.hardDrop();
         });
+
+        touchButtons.softDrop.addEventListener('touchstart', () => {
+            this.startSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('touchend', () => {
+            this.stopSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('mousedown', () => {
+            this.startSoftDrop();
+        });
+        touchButtons.softDrop.addEventListener('mouseup', () => {
+            this.stopSoftDrop();
+        });
+    }
+
+    startSoftDrop() {
+        if (this.gameState === GAME_STATES.PLAYING) {
+            this.board.movePiece(0, 1);
+        }
+    }
+
+    stopSoftDrop() {
+        // 停止加速下落，不需要额外操作
     }
 
     // 添加统一的按钮状态更新方法
