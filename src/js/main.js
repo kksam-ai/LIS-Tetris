@@ -1,11 +1,15 @@
 // 游戏配置
 const GAME_CONFIG = {
-    DIFFICULTY_SPEEDS: {
-        easy: 1000,    // 简单模式下方块每秒下落一格
-        normal: 750,   // 标准模式下方块每0.75秒下落一格
-        hard: 500      // 挑战模式下方块每0.5秒下落一格
+    DIFFICULTY_LEVELS: {
+        easy: 0,     // 简单模式从0级开始
+        normal: 5,   // 普通模式从5级开始
+        hard: 10     // 困难模式从10级开始
     },
+    BASE_SPEED: 1200, // 基础下落速度(ms)
+    MIN_SPEED: 100,   // 最小下落速度(ms)
+    SPEED_DECAY: 0.004, // 速度衰减系数
     DEFAULT_DIFFICULTY: 'normal',
+    MAX_LEVEL: 20,   // 最大等级
     CANVAS: {
         MAIN: {
             WIDTH: 300,
@@ -182,7 +186,7 @@ class SettingsManager {
 
     // 获取当前难度对应的下落速度
     getDropSpeed() {
-        return GAME_CONFIG.DIFFICULTY_SPEEDS[this.settings.difficulty];
+        return GAME_CONFIG.BASE_SPEED;
     }
 
     // 更新难度设置
@@ -917,14 +921,20 @@ class GameController {
     startGame() {
         this.gameState = GAME_STATES.PLAYING;
         this.score = 0;
-        this.level = 1;
-        this.lines = 0;
+        // 根据难度设置初始等级
+        this.level = GAME_CONFIG.DIFFICULTY_LEVELS[this.settingsManager.settings.difficulty] + 1;
+        this.lines = 0; // 初始消除行数始终为0
+        this.combo = 0;
         this.board = new GameBoard(
             GAME_CONFIG.CANVAS.MAIN.WIDTH / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE,
             GAME_CONFIG.CANVAS.MAIN.HEIGHT / GAME_CONFIG.CANVAS.MAIN.GRID_SIZE
         );
+        this.lastTime = 0;
+        // 设置dropCounter为dropInterval，确保立即下落
+        this.dropCounter = this.calculateDropInterval();
+
         this.updateScore();
-        this.updatePauseButtonsState(); // 添加按钮状态更新
+        this.updatePauseButtonsState();
 
         // 初始化第一个方块
         this.board.update();
@@ -994,19 +1004,17 @@ class GameController {
 
         // 重置游戏状态
         this.score = 0;
-        this.level = 1;
         this.lines = 0;
         this.combo = 0;
+        this.lastTime = 0;  // 重置时间计数器
+        this.dropCounter = this.calculateDropInterval();  // 设置为dropInterval确保立即下落
 
         // 重新初始化游戏板
         this.initializeGame();
 
-        // 更新分数显示
-        this.updateScore();
-
         // 开始新游戏
         this.startGame();
-        this.updatePauseButtonsState(); // 添加按钮状态更新
+        this.updatePauseButtonsState();
     }
 
     // 退出到主菜单
@@ -1054,7 +1062,11 @@ class GameController {
             }
 
             this.score += baseScore;
-            this.level = Math.floor(this.lines / 10) + 1;
+
+            // 更新等级，保持不低于初始等级
+            const initialLevel = GAME_CONFIG.DIFFICULTY_LEVELS[this.settingsManager.settings.difficulty] + 1;
+            const calculatedLevel = Math.floor(this.lines / 10) + 1;
+            this.level = Math.min(Math.max(calculatedLevel, initialLevel), GAME_CONFIG.MAX_LEVEL);
 
             // 更新分数显示，带动画效果
             this.updateScoreWithAnimation(baseScore);
@@ -1100,12 +1112,20 @@ class GameController {
         this.mobileScoreElements.highScore.textContent = this.highScore;
     }
 
+    // 计算下落间隔
+    calculateDropInterval() {
+        const level = this.level - 1;
+        const baseSpeed = GAME_CONFIG.BASE_SPEED;
+        // 修改计算公式，确保速度变化更合理
+        const speedFactor = Math.pow(0.85 - (level * GAME_CONFIG.SPEED_DECAY), Math.min(level, 10));
+        return Math.max(GAME_CONFIG.MIN_SPEED, Math.floor(baseSpeed * speedFactor));
+    }
+
     // 游戏主循环
     gameLoop(time = 0) {
         // 如果是第一次运行或者从暂停恢复
         if (this.lastTime === 0) {
             this.lastTime = time;
-            this.dropCounter = 0;
             console.log('Game loop initialized/resumed');
         }
 
@@ -1113,7 +1133,7 @@ class GameController {
         this.dropCounter += deltaTime;
 
         // 根据当前等级计算下落速度
-        const dropInterval = this.settingsManager.getDropSpeed() / this.level;
+        const dropInterval = this.calculateDropInterval();
 
         if (this.dropCounter > dropInterval) {
             if (!this.board.movePiece(0, 1)) {
@@ -1121,7 +1141,6 @@ class GameController {
                 const linesCleared = this.board.clearLines();
                 this.handleLineClear(linesCleared);
 
-                // 更新游戏状态，检查是否可以继续
                 if (!this.board.update()) {
                     this.gameOver();
                     return;
