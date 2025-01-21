@@ -566,6 +566,10 @@ class GameScreenManager {
         // 计算游戏区域尺寸
         const gameArea = this.calculateGameAreaSize();
 
+        // 设置mobile-game-area的宽度
+        const mobileGameArea = document.querySelector('.mobile-game-area');
+        mobileGameArea.style.width = `${gameArea.width}px`;
+
         // 设置游戏画布尺寸
         this.mobileGameCanvas.width = gameArea.width;
         this.mobileGameCanvas.height = gameArea.height;
@@ -580,7 +584,7 @@ class GameScreenManager {
         this.mobileGameCtx.fillStyle = '#FFFFFF';
         this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
-        // 设置预览画布尺寸为固定的72px
+        // 设置预览画布尺寸为固定的60px
         const previewSize = 60;
         this.mobileNextCanvas.width = previewSize;
         this.mobileNextCanvas.height = previewSize;
@@ -602,17 +606,11 @@ class GameScreenManager {
 
     // 计算游戏区域尺寸
     calculateGameAreaSize() {
-        // 获取游戏区域容器尺寸
-        const gameArea = document.querySelector('.mobile-game-area');
-        const containerWidth = gameArea.clientWidth;
-        const containerHeight = gameArea.clientHeight;
+        // 获取窗口宽度
+        const windowWidth = window.innerWidth;
 
-        // 分别计算基于宽度和高度的方块大小
-        const blockSizeFromWidth = containerWidth / 10;  // 保留小数
-        const blockSizeFromHeight = containerHeight / 20;  // 保留小数
-
-        // 取较小值并向下取整，确保不会超出容器
-        const blockSize = Math.floor(Math.min(blockSizeFromWidth, blockSizeFromHeight));
+        // 计算方块大小：(窗口宽度 - 110px) / 10 并向下取整
+        const blockSize = Math.floor((windowWidth - 110) / 10);
 
         // 使用整数方块大小计算最终画布尺寸
         const width = blockSize * 10;
