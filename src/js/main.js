@@ -776,6 +776,9 @@ class GameController {
         this.animationId = null;
         this.gameOverModal = document.getElementById('gameOverModal');
 
+        // 添加撤销按钮引用
+        this.undoButton = document.getElementById('mobileUndoMove');
+
         // 添加移动端分数元素
         this.mobileScoreElements = {
             score: document.getElementById('mobileScore'),
@@ -820,6 +823,11 @@ class GameController {
                 }
             }
         });
+
+        // 绑定撤销按钮事件
+        if (this.undoButton) {
+            this.undoButton.addEventListener('click', () => this.undoMove());
+        }
     }
 
     // 加载最高分
@@ -1079,11 +1087,6 @@ class GameController {
         // 根据当前等级计算下落速度
         const dropInterval = this.settingsManager.getDropSpeed() / this.level;
 
-        // 添加日志输出
-        if (this.dropCounter > dropInterval) {
-            console.log(`Drop triggered - Counter: ${this.dropCounter}, Interval: ${dropInterval}`);
-        }
-
         if (this.dropCounter > dropInterval) {
             if (!this.board.movePiece(0, 1)) {
                 this.board.lockPiece();
@@ -1102,6 +1105,9 @@ class GameController {
         // 渲染游戏画面
         this.renderer.renderBoard(this.board);
         this.renderer.renderNextPiece(this.board.nextPiece);
+
+        // 更新撤销按钮状态
+        this.updateUndoButtonState();
 
         // 添加移动端渲染
         if (this.screenManager.isMobile) {
@@ -1306,6 +1312,12 @@ class GameController {
         touchButtons.softDrop.addEventListener('mouseup', () => {
             this.stopSoftDrop();
         });
+
+        // 添加撤销按钮事件监听
+        const undoButton = document.getElementById('mobileUndoMove');
+        if (undoButton) {
+            undoButton.addEventListener('click', () => this.undoMove());
+        }
     }
 
     startSoftDrop() {
@@ -1326,6 +1338,22 @@ class GameController {
         }
         if (this.mobilePauseButton) {
             this.mobilePauseButton.textContent = buttonText;
+        }
+    }
+
+    // 撤销移动
+    undoMove() {
+        if (this.gameState === GAME_STATES.PLAYING && this.board.canUndo()) {
+            this.board.undo();
+            this.updateUndoButtonState();
+        }
+    }
+
+    // 更新撤销按钮状态
+    updateUndoButtonState() {
+        if (this.undoButton) {
+            const canUndo = this.gameState === GAME_STATES.PLAYING && this.board.canUndo();
+            this.undoButton.disabled = !canUndo;
         }
     }
 }

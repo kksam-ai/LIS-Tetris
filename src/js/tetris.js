@@ -125,6 +125,8 @@ class GameBoard {
         this.grid = this.createEmptyGrid();
         this.currentPiece = null;
         this.nextPiece = null;
+        this.lastLockedPiece = null;  // 记录上一个锁定的方块状态
+        this.lastClearedLines = [];   // 记录上一次消除的行
     }
 
     // 创建空网格
@@ -132,6 +134,38 @@ class GameBoard {
         return Array.from({ length: this.height }, () =>
             Array(this.width).fill(null)
         );
+    }
+
+    // 检查是否可以撤销
+    canUndo() {
+        return this.lastLockedPiece !== null &&  // 存在上一个锁定的方块
+               this.currentPiece !== null &&     // 当前有正在下落的方块
+               !this.lastClearedLines.length;    // 上一个方块没有触发消行
+    }
+
+    // 执行撤销操作
+    undo() {
+        if (!this.canUndo()) {
+            return false;
+        }
+
+        // 移除上一个锁定的方块
+        const { shape, x, y, color } = this.lastLockedPiece;
+        for (let row = 0; row < shape.length; row++) {
+            for (let col = 0; col < shape[row].length; col++) {
+                if (shape[row][col]) {
+                    const boardY = y + row;
+                    const boardX = x + col;
+                    if (boardY >= 0 && boardY < this.height && boardX >= 0 && boardX < this.width) {
+                        this.grid[boardY][boardX] = null;
+                    }
+                }
+            }
+        }
+
+        // 重置状态
+        this.lastLockedPiece = null;
+        return true;
     }
 
     // 生成新方块
@@ -174,6 +208,16 @@ class GameBoard {
 
     // 锁定方块
     lockPiece() {
+        if (!this.currentPiece) return;
+
+        // 保存当前方块状态，用于撤销
+        this.lastLockedPiece = {
+            shape: this.currentPiece.getCurrentShape(),
+            x: this.currentPiece.x,
+            y: this.currentPiece.y,
+            color: this.currentPiece.color
+        };
+
         const shape = this.currentPiece.getCurrentShape();
         for (let y = 0; y < shape.length; y++) {
             for (let x = 0; x < shape[y].length; x++) {
@@ -185,16 +229,18 @@ class GameBoard {
                 }
             }
         }
-        // 锁定后清除当前方块，触发新方块生成
         this.currentPiece = null;
     }
 
     // 清除完整行
     clearLines() {
+        this.lastClearedLines = []; // 重置上一次消除的行记录
         let linesCleared = 0;
 
         for (let y = this.height - 1; y >= 0; y--) {
             if (this.grid[y].every(cell => cell !== null)) {
+                // 记录被消除的行
+                this.lastClearedLines.push(y);
                 // 移除该行
                 this.grid.splice(y, 1);
                 // 在顶部添加新行
