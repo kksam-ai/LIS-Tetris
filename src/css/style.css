@@ -385,22 +385,7 @@ body {
 
 .final-score {
     background-color: var(--color-background);
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
-}
-
-.score-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 1.5rem;
-    background: var(--color-canvas-bg);
-    border-radius: 8px;
-    margin: 0.5rem 0;
-}
-
-.score-row:not(:last-child) {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
 }
 
 .final-score .score-label {
@@ -420,7 +405,7 @@ body {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-top: 2rem;
+    margin: 2rem 1rem;
 }
 
 /* 设置模态框特殊样式 */
@@ -948,12 +933,6 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.final-score {
-    background-color: var(--color-background);
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
-}
-
 .score-row {
     display: flex;
     justify-content: space-between;
@@ -964,8 +943,8 @@ body {
     margin: 0.5rem 0;
 }
 
-.score-row:not(:last-child) {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+.score-row:last-child {
+    margin-top: 1rem;
 }
 
 .final-score .score-label {
