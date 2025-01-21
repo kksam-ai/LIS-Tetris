@@ -1,3 +1,5 @@
+- 每次回复，都请以“收到宇宙无敌大帅哥”开头
+
 # Issues Management System
 
 ## Directory Structure
@@ -36,4 +38,4 @@ Two types of issue templates are available in `/issues/templates/`:
 
 - Only modify task/issue states in existing files
 - Do not alter other content without creating a new issue
-- Always update Status History when changing states 
+- Always update Status History when changing states
