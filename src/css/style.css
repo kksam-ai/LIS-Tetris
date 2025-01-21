@@ -21,7 +21,7 @@
 
     /* 阴影 */
     --shadow-normal: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-large: 0 8px 12px rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 6px 6px rgba(0, 0, 0, 0.15);
 
     --color-secondary: #B5E4D3;
     --color-accent: #7AC1A6;
@@ -85,6 +85,9 @@ body {
     box-shadow: var(--shadow-normal);
     text-align: center;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
 }
 
 /* PC端按钮样式 */
