@@ -625,7 +625,24 @@ class GameScreenManager {
         };
     }
 
-    // 添加窗口大小变化处理
+    // 计算并设置触控区域高度
+    calculateTouchControlsHeight() {
+        if (!this.isMobile) return;
+
+        const mobileMainArea = document.querySelector('.mobile-main-area');
+        const touchControls = document.querySelector('.touch-controls');
+
+        if (!mobileMainArea || !touchControls) return;
+
+        const mainAreaHeight = mobileMainArea.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const touchControlsHeight = windowHeight - mainAreaHeight;
+
+        // 设置触控区域高度
+        touchControls.style.height = `${Math.max(touchControlsHeight, 0)}px`;
+    }
+
+    // 修改 setupResizeHandler 方法
     setupResizeHandler() {
         window.addEventListener('resize', () => {
             const wasMobile = this.isMobile;
@@ -637,11 +654,13 @@ class GameScreenManager {
             } else if (this.isMobile) {
                 // 在移动端时，随窗口大小变化调整画布大小
                 this.initializeMobileCanvases();
+                // 重新计算触控区域高度
+                this.calculateTouchControlsHeight();
             }
         });
     }
 
-    // 显示游戏界面
+    // 修改 showGameScreen 方法
     showGameScreen() {
         this.startScreen.style.display = 'none';
         this.gameScreen.style.display = 'flex';
@@ -649,6 +668,11 @@ class GameScreenManager {
 
         // 重新初始化画布
         this.initializeCanvases();
+
+        // 如果是移动端，计算触控区域高度
+        if (this.isMobile) {
+            this.calculateTouchControlsHeight();
+        }
     }
 
     // 返回开始界面

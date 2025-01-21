@@ -1530,13 +1530,13 @@ body {
 
     /* 底部控制区域 */
     .touch-controls {
-        flex: 1;
         padding: 1rem 2vmin 6vmin 2vmin !important;
         backdrop-filter: blur(5px);
         display: flex;
         flex-direction: column;
         gap: 2vmin;
         align-items: center;
+        justify-content: flex-start;
     }
 
     /* 控制按钮行 */
