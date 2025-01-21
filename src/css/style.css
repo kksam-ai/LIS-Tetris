@@ -1560,8 +1560,8 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 15vmin;
-        height: 15vmin;
+        width: var(--touch-btn-size, 15vmin);
+        height: var(--touch-btn-size, 15vmin);
         border-radius: 50%;
         background: rgb(152 216 193 / 80%);
         border: 2px solid rgba(255, 255, 255, 0.2);

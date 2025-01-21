@@ -640,6 +640,30 @@ class GameScreenManager {
 
         // 设置触控区域高度
         touchControls.style.height = `${Math.max(touchControlsHeight, 0)}px`;
+
+        // 计算按钮尺寸
+        this.calculateButtonSize(touchControls);
+    }
+
+    // 计算按钮尺寸
+    calculateButtonSize(touchControls) {
+        // 获取容器的 padding 和 gap
+        const style = window.getComputedStyle(touchControls);
+        const paddingTop = parseFloat(style.paddingTop);
+        const paddingBottom = parseFloat(style.paddingBottom);
+        const gap = parseFloat(style.gap);
+
+        // 计算可用高度
+        const availableHeight = touchControls.offsetHeight - paddingTop - paddingBottom - gap;
+
+        // 计算按钮尺寸 (高度除以2，因为有两行)
+        let buttonSize = Math.floor(availableHeight / 2);
+
+        // 限制最大尺寸为 60px
+        buttonSize = Math.min(buttonSize, 60);
+
+        // 设置 CSS 变量
+        document.documentElement.style.setProperty('--touch-btn-size', `${buttonSize}px`);
     }
 
     // 修改 setupResizeHandler 方法
