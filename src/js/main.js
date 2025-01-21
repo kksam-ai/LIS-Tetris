@@ -566,10 +566,6 @@ class GameScreenManager {
         // 计算游戏区域尺寸
         const gameArea = this.calculateGameAreaSize();
 
-        // 设置mobile-game-area的宽度
-        const mobileGameArea = document.querySelector('.mobile-game-area');
-        mobileGameArea.style.width = `${gameArea.width}px`;
-
         // 设置游戏画布尺寸
         this.mobileGameCanvas.width = gameArea.width;
         this.mobileGameCanvas.height = gameArea.height;
@@ -584,7 +580,7 @@ class GameScreenManager {
         this.mobileGameCtx.fillStyle = '#FFFFFF';
         this.mobileGameCtx.fillRect(0, 0, gameArea.width, gameArea.height);
 
-        // 设置预览画布尺寸为固定的60px
+        // 设置预览画布尺寸为固定的72px
         const previewSize = 60;
         this.mobileNextCanvas.width = previewSize;
         this.mobileNextCanvas.height = previewSize;
