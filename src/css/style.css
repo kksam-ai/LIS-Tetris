@@ -1245,9 +1245,9 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--color-canvas-bg);
+        /* background-color: var(--color-canvas-bg); */
         border-radius: 8px;
-        box-shadow: var(--shadow-normal);
+        /* box-shadow: var(--shadow-normal); */
         overflow: hidden;
     }
 
@@ -1295,46 +1295,61 @@ body {
         font-size: 0.85rem;
         padding: 0 3vmin;
         margin: 0;
-    }
-
-    /* 撤销按钮样式 */
-    .mobile-game-controls .undo-button {
-        background: #F4B8C3 !important;  /* 基础粉红色 */
-        opacity: 1;
-    }
-
-    .mobile-game-controls .undo-button:disabled {
-        background: #FFE4E8 !important;  /* 更浅的粉红色表示禁用状态 */
-        cursor: not-allowed;
-        transform: none !important;
         box-shadow: none !important;
-        opacity: 0.8;
-    }
-
-    .mobile-game-controls .undo-button:not(:disabled):hover {
-        background: #F29DAB !important;  /* 深一点的粉红色用于悬浮 */
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-large);
-    }
-
-    .mobile-game-controls .undo-button:not(:disabled):active,
-    .mobile-game-controls .undo-button:not(:disabled).clicked {
-        background: #EF8293 !important;  /* 更深的粉红色用于点击状态 */
-        transform: scale(0.95);
-        box-shadow: var(--shadow-normal);
+        transform: none !important;
     }
 
     .mobile-game-controls .game-button:hover {
         background: #b8b8b8;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-large);
+        box-shadow: none !important;
+        transform: none !important;
     }
 
     .mobile-game-controls .game-button:active,
     .mobile-game-controls .game-button.clicked {
         background: #a3a3a3;
-        transform: scale(0.95);
-        box-shadow: var(--shadow-normal);
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    /* 撤销按钮样式 */
+    .mobile-game-controls .undo-button {
+        background: #F4B8C3 !important;
+        opacity: 1;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    .mobile-game-controls .undo-button:disabled {
+        background: #FFE4E8 !important;
+        cursor: not-allowed;
+        opacity: 0.8;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    .mobile-game-controls .undo-button:not(:disabled):hover {
+        background: #F29DAB !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    .mobile-game-controls .undo-button:not(:disabled):active,
+    .mobile-game-controls .undo-button:not(:disabled).clicked {
+        background: #EF8293 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    .mobile-game-controls .game-button:hover {
+        background: #b8b8b8;
+        box-shadow: none !important;
+    }
+
+    .mobile-game-controls .game-button:active,
+    .mobile-game-controls .game-button.clicked {
+        background: #a3a3a3;
+        box-shadow: none !important;
     }
 
     /* 移动端用户头像 */
@@ -1382,9 +1397,9 @@ body {
     .mobile-next-piece {
         width: 60px;
         height: 60px;
-        background-color: var(--color-canvas-bg);
+        /* background-color: var(--color-canvas-bg); */
         border-radius: 8px;
-        box-shadow: var(--shadow-normal);
+        /* box-shadow: var(--shadow-normal); */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1636,5 +1651,9 @@ body {
 .key-hint {
     color: #999;
     font-size: 0.8rem;
+}
+
+.mobile-game-controls .game-button::after {
+    display: none;
 }
 
