@@ -277,18 +277,34 @@ class GameBoard {
 
     // 硬降（直接降落到底部）
     hardDrop() {
-        // 计算可以下落的最大距离
+        if (!this.currentPiece) return 0;
+
         let dropDistance = 0;
-        while (!this.checkCollision(this.currentPiece, 0, dropDistance + 1)) {
-            dropDistance++;
+        let maxDropDistance = this.height; // 最大可能的下落距离
+
+        // 使用二分查找优化距离计算
+        let low = 0;
+        let high = maxDropDistance;
+
+        while (low <= high) {
+            let mid = Math.floor((low + high) / 2);
+            if (this.checkCollision(this.currentPiece, 0, mid)) {
+                high = mid - 1;
+            } else {
+                if (this.checkCollision(this.currentPiece, 0, mid + 1)) {
+                    dropDistance = mid;
+                    break;
+                }
+                low = mid + 1;
+            }
         }
 
-        // 移动方块到最终位置
+        // 使用movePiece进行实际移动
         if (dropDistance > 0) {
             this.currentPiece.y += dropDistance;
         }
 
-        // 锁定方块并清除行
+        // 锁定方块并处理消行
         this.lockPiece();
         return this.clearLines();
     }

@@ -300,20 +300,24 @@ class SettingsManager {
                 const action = button.dataset.action;
                 const keyCode = this.keySettingsManager.keySettings[action];
                 const keyText = button.querySelector('.key-text');
-                keyText.textContent = this.getKeyDisplayName(keyCode);
+                if (keyText) {
+                    keyText.textContent = this.getKeyDisplayName(keyCode);
+                }
             });
         };
 
         // 获取按键显示名称
         this.getKeyDisplayName = (keyCode) => {
             if (!keyCode) return '未设置';
+            if (typeof keyCode !== 'string') return String(keyCode);
+
             switch (keyCode) {
                 case 'Space': return '空格';
                 case 'ArrowLeft': return '←';
                 case 'ArrowRight': return '→';
                 case 'ArrowDown': return '↓';
                 case 'ArrowUp': return '↑';
-                default: return keyCode.replace('Key', '');
+                default: return keyCode.startsWith('Key') ? keyCode.replace('Key', '') : keyCode;
             }
         };
 
@@ -371,8 +375,12 @@ class SettingsManager {
             });
         }
 
-        // 初始显示
-        updateKeyDisplay();
+        // 确保在DOM加载完成后更新显示
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateKeyDisplay);
+        } else {
+            updateKeyDisplay();
+        }
     }
 }
 
@@ -448,13 +456,15 @@ class KeySettingsManager {
     // 获取按键显示名称
     getKeyDisplayName(keyCode) {
         if (!keyCode) return '未设置';
+        if (typeof keyCode !== 'string') return String(keyCode);
+
         switch (keyCode) {
             case 'Space': return '空格';
             case 'ArrowLeft': return '←';
             case 'ArrowRight': return '→';
             case 'ArrowDown': return '↓';
             case 'ArrowUp': return '↑';
-            default: return keyCode.replace('Key', '');
+            default: return keyCode.startsWith('Key') ? keyCode.replace('Key', '') : keyCode;
         }
     }
 
